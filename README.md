@@ -4,12 +4,13 @@ Pussybot, a Discord bot developed by `gravy#0001` for [LDF](https://discord.gg/r
 
 
 ## Setup
-This will guide you through the steps of setting up pussybot to use in your own server. **Note that pussybot is designed for 1 server only and will not work on multiple servers, most of the commands are global but the events are not.**
+This will guide you through the steps of setting up pussybot to use in your own server. 
+**Note that pussybot is designed for 1 server only and will not work on multiple servers, most of the commands are global but the events are not.**
 
 First, connecting to our databases.
-Pussybot already handles connecting to databases, but you will need to give us some information *about* it.
+Pussybot already handles connecting to databases, but you will need to give us some info like the password and host.
 
-**JSON** (config: *make sure to put in a .json file*)
+**JSON** config: (*make sure to put in a .json file*)
 ```json
 {
 	"host": "1.1.1.1",
