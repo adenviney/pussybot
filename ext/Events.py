@@ -111,6 +111,13 @@ class Events(commands.Cog):
                     #Send a message to the new users channel that the user has been verified
                     embed = discord.Embed(title=f"✅ {message.author.name} has been verified", description=f"{message.author.mention} ({message.author.id})", timestamp=datetime.datetime.utcnow(), color=discord.Color.green())
                     await bot.get_channel(983392113746141204).send(embed=embed)
+                    
+        if message.channel.id == 985325859235835915:
+            await message.delete()
+            embed = discord.Embed(title=f"Anonymous confession", description=f"{message.content}", timestamp=datetime.datetime.utcnow(), color=discord.Color.default())
+            await bot.get_channel(943677015486267482).send(embed=embed)
+            
+            
         
            
         if message.author.bot: return
