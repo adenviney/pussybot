@@ -51,11 +51,12 @@ You can go ahead and remove the first two lines and just paste your token in the
 named `tkn.json`
 
 <details>
-<summary>Don't have a token? Head on over to [here](https://discord.com/developers/applications) and follow these steps:</summary>
-**note: you will need to be logged in to your Discord account on your browser**
+<summary>Don't have a token? Click me!</summary>
+	Everything is here: https://discord.com/developers/applications
+	**note: you will need to be logged in to your Discord account on your browser**
 
-![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/start.png)![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/create.png)
-![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/botnav.png)![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/addbot.png)![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/doit.png)![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/token.png) This string of characters is your token. **Do not share this with anybody, they can (and will) take control of your bot.** This repository is not responsible if someone shares this.
+	![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/start.png)![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/create.png)
+	![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/botnav.png)![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/addbot.png)![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/doit.png)![profile](https://raw.githubusercontent.com/adenviney/pussybot/master/imgs/token.png) This string of characters is your token. **Do not share this with anybody, they can (and will) take control of your bot.** This repository is not responsible if someone shares this.
 
 </details>
 
