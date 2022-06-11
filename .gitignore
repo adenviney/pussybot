@@ -1,8 +1,9 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 ext/__pycache__/
-.vscode/
 *.py[cod]
 *$py.class
+# Other stuff including config files and token
+.vscode/
 *.json
 !spec/*.json
