@@ -1,11 +1,11 @@
 import os, discord, mysql.connector, json
 from discord.ext import commands
 
-VERSION = "0.8.3"
+VERSION = "0.8.4"
 PATCHNOTES = f"""Pussybot v{VERSION} patchnotes
 [!] Open source code is available on GitHub: https://github.com/adenviney/pussybot
 
-[+] Pussybot will now automatically delete an attachment after sending to the logging channel.
+[*] Users can no longer speak in restricted channels
 """
 
 with open('database-conf.json') as f:
