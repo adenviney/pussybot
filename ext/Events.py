@@ -93,7 +93,7 @@ class Events(commands.Cog):
         
         if message.channel.id == 983381315804069989:  
             xd.reconnect(attempts=3)
-            roux.execute(f"SELECT * FROM pussybot_verification")
+            roux.execute(f"SELECT * FROM `pussybot_verification` WHERE `discord_id` = {message.author.id}")
             result = roux.fetchall()
             
             for i in result:
