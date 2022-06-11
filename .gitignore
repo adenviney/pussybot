@@ -5,5 +5,7 @@ ext/__pycache__/
 *$py.class
 # Other stuff including config files and token
 .vscode/
+.git/
+attachments/*
 *.json
 !spec/*.json
