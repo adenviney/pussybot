@@ -80,7 +80,7 @@ class Events(commands.Cog):
                         embed.set_image(url=f"attachment://image.{extension}")
             
             try:
-                await bot.get_channel(939685647025848380).send(embed=embed)
+                await bot.get_channel(939685647025848380).send(file=file, embed=embed)
                 os.remove(f"attachments/{message.id}.{extension}")
             except Exception as e:
                 print(e)
