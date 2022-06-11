@@ -2,7 +2,7 @@ import contextlib, datetime, io, textwrap, discord
 from traceback import format_exception
 from pussybot import bot
 from discord.ext import commands
-from evalcc import *
+from lib.evalcc import *
 
 class Owner(commands.Cog):
     def __init__(self, bot): 

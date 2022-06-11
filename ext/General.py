@@ -1,6 +1,6 @@
 from discord.ext import commands
 from pussybot import bot, PATCHNOTES
-from evalcc import *
+from lib.evalcc import *
 
 class General(commands.Cog):
     def __init__(self, bot): self.bot = bot
