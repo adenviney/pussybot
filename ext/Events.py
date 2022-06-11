@@ -2,7 +2,7 @@ import datetime, discord, requests, re, random,  mysql.connector, json
 from discord.ext import commands
 from pussybot import cnx, mycursor, bot, VERSION
 
-#I'll be honest, I don't why I added a database here, it doesn't need one, but I'm not sure if I should remove it
+#Database checks whether the user code is their code.
 with open('./ext/database-conf3.json') as f:
     config = json.load(f)
 
@@ -44,7 +44,11 @@ class Events(commands.Cog):
         xd.commit()
         
         #DM the user the code
-        await member.send(f"Hello, {member.mention}!\nPlease use this code to verify that you are not a bot: `{random_code}`\n\n**This code will only work for you**")
+        try: 
+            await member.send(f"Hello, {member.mention}!\nPlease use this code to verify that you are not a bot: `{random_code}`\n\n**This code will only work for you**")
+        except:
+            await channel.send(f"{member.mention}! Your DMs are disabled, please enable them and rejoin the server to receive your verification code.")
+            pass
         
         embed = discord.Embed(title=f"{member.name} joined", description=f"{member.mention}, please check your DMs for a code and paste it in the verify channel to continue. If you have not received a DM, turn them on and rejoin.", timestamp=datetime.datetime.utcnow(), color=discord.Color.default())
         await channel.send(embed=embed)
