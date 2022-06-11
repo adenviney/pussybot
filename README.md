@@ -1,6 +1,6 @@
 # Pussybot
 Pussybot, a Discord bot developed by `gravy#0001` for [LDF](https://discord.gg/rwqTbbxzAN). Based on Previous code also written by `gravy#0001`.
-Some of the libraries Pussybot uses are<br>
+Some of the libraries Pussybot uses are:<br><br>
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Discord](https://img.shields.io/badge/Discord-%237289DA.svg?style=for-the-badge&logo=discord&logoColor=white)
