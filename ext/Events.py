@@ -32,10 +32,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        #DM the user a random code, this will be used to verify that they are not a bot
-        
         xd.reconnect(attempts=3)
-        #Get a random code
         random_code = random.randint(100000, 999999)
         channel = bot.get_channel(983381315804069989)
         
@@ -65,19 +62,7 @@ class Events(commands.Cog):
                 else: url = re.findall(r'(http?://[^\s]+)', message.content)
                 embed.add_field(name="Link(s)", value=f"{url}", inline=True)
             
-            ServerID = message.guild.id
-            
-            xd.reconnect(attempts=3)
-            mycursor.execute(f"SELECT * FROM WCTable WHERE ServerID = {ServerID}")
-
-            result = mycursor.fetchall()
-
-            ChannelID = str(result[0]).split(", ")[1].replace(")", "") #¯\_(ツ)_/¯
-            ServerID = str(result[0]).split(", ")[0].replace("(", "") #¯\_(ツ)_/¯
-            
-            
-            ChannelToSend = bot.get_channel(int(ChannelID))
-            await ChannelToSend.send(embed=embed)
+            await bot.get_channel(939685647025848380).send(embed=embed)
         except:
             embed = discord.Embed(title=f"Message deleted", timestamp=datetime.datetime.utcnow(), color=discord.Color.red())
             embed.add_field(name="Author", value=f"{message.author} [{message.author.id}]", inline=True)
@@ -87,30 +72,15 @@ class Events(commands.Cog):
                 if len(message.attachments) == 1:
                     embed.add_field(name="Attachment", value=message.attachments[0].url)
                     if message.attachments[0].url.endswith(('.jpg', '.png', '.jpeg', '.gif')): 
-                        
-                        extension = message.attachments[0].url.split(".")[-1] #it works
+                        extension = message.attachments[0].url.split(".")[-1]
 
                         img_data = requests.get(message.attachments[0].url).content
-                        with open(f'attachments/{message.id}.{extension}', 'wb') as handler:
-                            handler.write(img_data)
-                        file = discord.File("attachments/" + str(message.id) + "." + str(extension), filename=f"image.{extension}")
-                        embed.set_image(url=f"attachment://image.{extension}") #it works: also
+                        with open(f'attachments/{message.id}.{extension}', 'wb') as handler: handler.write(img_data)
+                        file = discord.File(f"attachments/{str(message.id)}.{str(extension)}", filename=f"image.{extension}")
+                        embed.set_image(url=f"attachment://image.{extension}")
             
             try:
-                # ServerID = message.guild.id
-                
-                # mycursor.execute(f"SELECT * FROM WCTable WHERE ServerID = {ServerID}")
-
-                # result = mycursor.fetchall()
-
-                # ChannelID = str(result[0]).split(", ")[1].replace(")", "")
-                # ServerID = str(result[0]).split(", ")[0].replace("(", "")
-                
-                
-                ChannelToSend = bot.get_channel(939685647025848380)
-                await ChannelToSend.send(file=file, embed=embed)
-                
-                #Delete attachment from attachments folder
+                await bot.get_channel(939685647025848380).send(embed=embed)
                 os.remove(f"attachments/{message.id}.{extension}")
             except Exception as e:
                 print(e)
@@ -119,10 +89,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        #Get all the pending verification user ids and codes and see if they match
-        
-        if message.author.id == bot.user.id:
-            return
+        if message.author.id == bot.user.id: return
         
         if message.channel.id == 983381315804069989:  
             xd.reconnect(attempts=3)
