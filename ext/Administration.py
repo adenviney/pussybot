@@ -25,14 +25,6 @@ class Administration(commands.Cog):
             return
         for channel in ctx.guild.channels:
             try:
-                if channel.name == "-̗̀➛announcements": pass
-                if channel.name == "・rules࿐": pass
-                if channel.name == "・roles࿐": pass
-                if channel.name == "・color-roles࿐": pass
-                if channel.name == "・verify࿐": pass
-                if channel.name == "・new-users࿐": pass
-                if channel.name == "-̗̀➛giveaways": pass
-                
                 await channel.set_permissions(discord.utils.get(ctx.guild.roles, name="Verified"), send_messages=False)
             except Exception as e:
                 if e == "403 Forbidden (error code: 50013): Cannot modify send_messages": 
@@ -58,17 +50,10 @@ class Administration(commands.Cog):
             await ctx.reply(embed=embed)
             return
         for channel in ctx.guild.channels:
+            restricted_channels = [939011378956603452, 938973141919752202, 939000498084782150, 939613231574573167, 983381315804069989, 983392113746141204, 982828063379325008]
             try:
-                #if channel is named announcements, skip it
-                if channel.name == "-̗̀➛announcements": pass
-                if channel.name == "・rules࿐": pass
-                if channel.name == "・roles࿐": pass
-                if channel.name == "・color-roles࿐": pass
-                if channel.name == "・verify࿐": pass
-                if channel.name == "・new-users࿐": pass
-                if channel.name == "-̗̀➛giveaways": pass
-                
-                else: await channel.set_permissions(discord.utils.get(ctx.guild.roles, name="Verified"), send_messages=True)
+                if channel.id in restricted_channels: await channel.set_permissions(discord.utils.get(ctx.guild.roles, name="Verified"), send_messages=False)
+                else:  await channel.set_permissions(discord.utils.get(ctx.guild.roles, name="Verified"), send_messages=True)
             except Exception as e:
                 embed = discord.Embed(title=f"❌ Could not unlock {channel}", description=f"Failed to execute", timestamp=datetime.datetime.utcnow(), color=discord.Color.red())
                 embed.add_field(name="Error", value=e, inline=True)
