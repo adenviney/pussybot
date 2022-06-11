@@ -57,7 +57,7 @@ class Owner(commands.Cog):
     @commands.is_owner()
     async def shutdown(self, ctx):
         """Shutdown the bot."""
-        await ctx.send("Developer shutdown: Initiating.")
+        await ctx.send("Shutting down...")
         exit()
         
     @commands.command(name="toggle", brief="Enable/Disable a command")
