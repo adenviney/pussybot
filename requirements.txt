@@ -1,0 +1,4 @@
+mysql-connector
+discord.py
+buttons
+requests
