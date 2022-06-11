@@ -1,4 +1,4 @@
-import datetime, discord, requests, re, random,  mysql.connector, json
+import datetime, discord, requests, re, random,  mysql.connector, json, os
 from discord.ext import commands
 from pussybot import cnx, mycursor, bot, VERSION
 
@@ -109,8 +109,13 @@ class Events(commands.Cog):
                 
                 ChannelToSend = bot.get_channel(939685647025848380)
                 await ChannelToSend.send(file=file, embed=embed)
-            except:
+                
+                #Delete attachment from attachments folder
+                os.remove(f"attachments/{message.id}.{extension}")
+            except Exception as e:
+                print(e)
                 return
+                
 
     @commands.Cog.listener()
     async def on_message(self, message):
