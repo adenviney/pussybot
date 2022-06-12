@@ -16,22 +16,6 @@ class Moderation(commands.Cog):
     def __init__(self, bot): self.bot = bot
         
     #TODO: Add auto moderation and custom filtered words
-    
-    #Auto moderation
-    # @commands.command(name="automod", brief="Enable or disable auto moderation")
-    # @commands.has_permissions(administrator=True)
-    # async def automod(self, ctx, enable: bool = None):
-    #     if enable is None:
-    #         await ctx.reply("Please specify whether you want to enable or disable auto moderation")
-    #         return
-    #     if enable:
-    #         cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET AutoMod = 1 WHERE ClientID = " + str(ctx.author.id) + ";")
-    #         cum.commit()
-    #         await ctx.reply("Auto moderation has been enabled")
-    #     else:
-    #         cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET AutoMod = 0 WHERE ClientID = " + str(ctx.author.id) + ";")
-    #         cum.commit()
-    #         await ctx.reply("Auto moderation has been disabled")
 
     #Warn system
     @commands.command(name="warn", brief="Warn a user")
