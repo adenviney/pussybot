@@ -40,7 +40,7 @@ class Moderation(commands.Cog):
         if cum.is_connected(): pass
         else: cum.reconnect(attempts=3)
         if user is None:
-            await ctx.reply("Please specify a user to warn")
+            await ctx.send(discord.Embed(title=f"You need to specify a user", color=discord.Color.red()))
             return
         if reason is None: reason = "No reason given"
         embed = discord.Embed(title="Warned", description=f"You have been warned in {ctx.guild.name} for {reason}", color=discord.Color.red())
@@ -77,13 +77,49 @@ class Moderation(commands.Cog):
     async def warns(self, ctx, user: discord.Member):
         if cum.is_connected(): pass
         else: cum.reconnect(attempts=3)
-        if user is None: await ctx.send(discord.Embed(title=f"You need to specify a user", color=discord.Color.red()))
+        if user is None: 
+            await ctx.send(discord.Embed(title=f"You need to specify a user", color=discord.Color.red()))
+            return
         cursor.execute("SELECT Warns FROM `" + str(ctx.guild.id) + "` WHERE ClientID = " + str(user.id) + ";")
         warns = cursor.fetchone()[0]
         if warns == 0: await ctx.send(embed=discord.Embed(title=f"{user.name}#{user.discriminator} has no warns", color=discord.Color.green()))
         if warns == 1: await ctx.send(embed=discord.Embed(title=f"{user.name}#{user.discriminator} has 1 warn", color=discord.Color.green()))
         else: await ctx.send(embed=discord.Embed(title=f"{user.name}#{user.discriminator} has {warns} warns", color=discord.Color.green()))
         
+    @commands.command(name="clearwarns", brief="Clear the warns of a user", aliases=["cwarns", "cw"])
+    @commands.has_permissions(administrator=True)
+    async def clearwarns(self, ctx, user: discord.Member):
+        if cum.is_connected(): pass
+        else: cum.reconnect(attempts=3)
+        if user is None: 
+            await ctx.send(discord.Embed(title=f"You need to specify a user", color=discord.Color.red()))
+            return
+        cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET Warns = 0 WHERE ClientID = " + str(user.id) + ";")
+        cum.commit()
+        await ctx.send(embed=discord.Embed(title=f"Cleared {user.name}#{user.discriminator}'s warns", color=discord.Color.green()))
+        
+    @commands.command(name="removewarn", brief="Remove a warn from a user", aliases=["rwarn", "rw"])
+    @commands.has_permissions(administrator=True)
+    async def removewarn(self, ctx, user: discord.Member, amt: int):
+        if cum.is_connected(): pass
+        else: cum.reconnect(attempts=3)
+        if user is None:
+            await ctx.send(discord.Embed(title=f"You need to specify a user", color=discord.Color.red()))
+            return
+        if amt is None:
+            await ctx.send(discord.Embed(title=f"You need to specify an amount", color=discord.Color.red()))
+            return
+        cursor.execute("SELECT Warns FROM `" + str(ctx.guild.id) + "` WHERE ClientID = " + str(user.id) + ";")
+        warns = cursor.fetchone()[0]
+        if warns == 0:
+            await ctx.send(discord.Embed(title=f"{user.name}#{user.discriminator} has no warns", color=discord.Color.green()))
+            return
+        if amt > warns:
+            await ctx.send(discord.Embed(title=f"{user.name}#{user.discriminator} has only {warns} warns", color=discord.Color.green()))
+            return
+        cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET Warns = Warns - " + str(amt) + " WHERE ClientID = " + str(user.id) + ";")
+        cum.commit()
+        await ctx.send(embed=discord.Embed(title=f"Removed {amt} warns from {user.name}#{user.discriminator}", color=discord.Color.green()))
             
         
         
