@@ -2,6 +2,7 @@ import datetime, discord, requests, re, random,  mysql.connector, json, os
 from discord.ext import commands
 from pussybot import cnx, mycursor, bot, VERSION
 
+
 #Database checks whether the user code is their code.
 with open('./ext/database-conf3.json') as f:
     config = json.load(f)
@@ -14,10 +15,24 @@ except mysql.connector.Error as err: #This is fine
     print("You fucked up lmao" + str(err))
 print("Loaded events database successfully")
 
+with open('./ext/database-conf4.json') as f:
+    config2 = json.load(f)
+
+with open('./ext/database-conf4.json') as f:
+    config2 = json.load(f)
+try: #Everything
+    cbx = mysql.connector.connect(**config2)
+    csr = cbx.cursor()
+    print(f"Connected to {config2['user']}")
+except mysql.connector.Error as err: print("You fucked up lmao" + str(err))
+
+
 class Events(commands.Cog):
     def __init__(self, bot): 
         self.bot = bot
         self.version = VERSION
+        self.max_window = 5
+        self.window_time_ms = 5000
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -134,6 +149,20 @@ class Events(commands.Cog):
             await bot.get_channel(943677015486267482).send(embed=embed)
             await message.delete()
         
+        #Automod
+        if cbx.is_connected(): pass
+        else: cbx.reconnect(attempts=3)
+        
+        csr.execute("SELECT * FROM `RestrictedWords`")
+        result = csr.fetchall()
+        for i in result:
+            if i[0] in message.content.lower():
+                await message.delete()
+                try:
+                    await message.author.send(f"You have used a restricted word, please do not use `{i[0]}` in your messages.")
+                except:
+                    await message.channel.send(f"{message.author.mention} has used a restricted word, please do not use `{i[0]}` in your messages.")
+                return        
            
         if message.author.bot: return
         if message.guild is None: return

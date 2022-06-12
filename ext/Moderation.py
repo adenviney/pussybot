@@ -6,10 +6,19 @@ from discord.ext import tasks
 with open('./ext/database-conf.json') as f:
     config = json.load(f)
 
+with open('./ext/database-conf4.json') as f:
+    config2 = json.load(f)
+
 try: #Everything
     cum = mysql.connector.connect(**config)
     cursor = cum.cursor()
     print(f"Connected to {config['user']}")
+except mysql.connector.Error as err: print("You fucked up lmao" + str(err))
+
+try: #Everything
+    cbx = mysql.connector.connect(**config2)
+    csr = cbx.cursor()
+    print(f"Connected to {config2['user']}")
 except mysql.connector.Error as err: print("You fucked up lmao" + str(err))
 
 class Moderation(commands.Cog):
@@ -105,6 +114,56 @@ class Moderation(commands.Cog):
         cum.commit()
         await ctx.send(embed=discord.Embed(title=f"Removed {amt} warns from {user.name}#{user.discriminator}", color=discord.Color.green()))
             
+        
+    @commands.command(name="addrestrictedword", brief="Add a restricted word", aliases=["arw", "arword"])
+    @commands.has_permissions(administrator=True)
+    async def addrestrictedword(self, ctx, word: str):
+        if cbx.is_connected(): pass
+        else: cbx.reconnect(attempts=3)
+        if word is None:
+            await ctx.send(discord.Embed(title=f"You need to specify a word", color=discord.Color.red()))
+            return
+        csr.execute("SELECT * FROM `RestrictedWords` WHERE Word = '" + word + "';")
+        if csr.fetchone() is not None:
+            await ctx.send(discord.Embed(title=f"{word} is already a restricted word", color=discord.Color.red()))
+            return
+        csr.execute("INSERT INTO `RestrictedWords` (Word) VALUES ('" + word + "');")
+        cbx.commit()
+        await ctx.send(embed=discord.Embed(title=f"Added {word} to the restricted words", color=discord.Color.green()))
+        
+        
+    @commands.command(name="removerestrictedword", brief="Remove a restricted word", aliases=["rrw", "rrword"])
+    @commands.has_permissions(administrator=True)
+    async def removerestrictedword(self, ctx, word: str):
+        if cbx.is_connected(): pass
+        else: cbx.reconnect(attempts=3)
+        if word is None:
+            await ctx.send(discord.Embed(title=f"You need to specify a word", color=discord.Color.red()))
+            return
+        csr.execute("SELECT * FROM `RestrictedWords` WHERE Word = '" + word + "';")
+        if csr.fetchone() is None:
+            await ctx.send(discord.Embed(title=f"{word} is not a restricted word", color=discord.Color.red()))
+            return
+        csr.execute("DELETE FROM `RestrictedWords` WHERE Word = '" + word + "';")
+        cbx.commit()
+        await ctx.send(embed=discord.Embed(title=f"Removed {word} from the restricted words", color=discord.Color.green()))
+        
+    @commands.command(name="listrestrictedwords", brief="List the restricted words", aliases=["lrw", "lrwords"])
+    @commands.has_permissions(administrator=True)
+    async def listrestrictedwords(self, ctx):
+        if cbx.is_connected(): pass
+        else: cbx.reconnect(attempts=3)
+        csr.execute("SELECT * FROM `RestrictedWords`;")
+        words = csr.fetchall()
+        if len(words) == 0:
+            await ctx.send(discord.Embed(title=f"There are no restricted words", color=discord.Color.green()))
+            return
+        msg = ""
+        for word in words:
+            msg += word[0] + "\n"
+        await ctx.send(embed=discord.Embed(title=f"Restricted words", description=msg, color=discord.Color.green()))
+        
+        
         
         
     
