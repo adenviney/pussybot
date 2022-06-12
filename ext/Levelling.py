@@ -95,10 +95,10 @@ class Leveling(commands.Cog):
             if ID == ctx.author.id:
                 embed = discord.Embed(title=f"{ctx.author.name}'s level", description=f"You are currently level {str(currentLevel)} with {str(newXP)} experience", color=0x885DD3)
                 embed.set_thumbnail(url=ctx.author.avatar)
-                if ctx.channel.name == "xp-spam":
-                    embed.set_footer(text="You're getting x2 XP for the channel being named xp-spam!")
+                if "xp-spam" in ctx.channel.name:
+                    embed.set_footer(text="You're getting x2 XP for xp-spam being in the channel name!")
                 else:
-                    embed.set_footer(text=f"Tip: Trying to get more XP? Create a channel called \"xp-spam\" for a x2 XP boost!")
+                    embed.set_footer(text=f"Tip: Trying to get more XP? Create a channel with \"xp-spam\" in the name for a x2 XP boost!")
                 await ctx.reply(embed=embed)
             else:
                 embed = discord.Embed(title=f"{user.name}'s level", description=f"{user.mention} is currently level {str(currentLevel)} with {str(newXP)} experience", color=0x885DD3)
@@ -121,7 +121,7 @@ class Leveling(commands.Cog):
             cnxm.commit()
             cursor.execute("SELECT UserXP, UserLevel FROM `" + str(message.guild.id) + "` WHERE ClientID = " + str(message.author.id) + ";")
         
-        if message.channel.name == "xp-spam":
+        if "xp-spam" in message.channel.name:
             xp = self.genXP(int(len(message.content)), True)
         else:
             xp = self.genXP(int(len(message.content)), False)
