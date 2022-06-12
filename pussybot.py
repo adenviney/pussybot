@@ -5,7 +5,7 @@ VERSION = "0.8.4"
 PATCHNOTES = f"""Pussybot v{VERSION} patchnotes
 [!] Open source code is available on GitHub: https://github.com/adenviney/pussybot
 
-[*] Users can no longer speak in restricted channels
+[+] Added anonymous confession support
 """
 
 with open('database-conf.json') as f:
