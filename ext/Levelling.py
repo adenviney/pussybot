@@ -37,14 +37,11 @@ class Leveling(commands.Cog):
         if level > 690000:
             await ctx.reply(f"{ctx.author.name}, you cannot set a level higher than 690000")
             return
-        if level < 0:
-            eas = True
+        if level < 0: eas = True
         cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET UserXP = " + str(level * 1000) + ", UserLevel = " + str(level) + " WHERE ClientID = " + str(user.id) + ";")
         cnxm.commit()
-        if eas: 
-            await ctx.reply(f"{user.mention}'s level has been set to {level}, what did they do to deserve this?")
-        else:
-            await ctx.reply(f"{user.mention}'s level has been set to {level}")
+        if eas: await ctx.reply(f"{user.mention}'s level has been set to {level}, what did they do to deserve this?")
+        else: await ctx.reply(f"{user.mention}'s level has been set to {level}")
  
         
     @commands.command(aliases=['lb'], name="leaderboard", brief="Get the top X levels in the server")
@@ -55,6 +52,8 @@ class Leveling(commands.Cog):
         except Exception as e:
             await ctx.reply(f"There aren't that many users in the database yet, please lower the amount {e}")
             return
+        
+        
         
         desc = []
         for i, pos in enumerate(cursor.fetchall()):
