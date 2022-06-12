@@ -58,6 +58,12 @@ class Events(commands.Cog):
         embed = discord.Embed(title=f"{member.name} joined", description=f"{member.mention}, please check your DMs for a code and paste it in the verify channel to continue. If you have not received a DM, turn them on and rejoin.", timestamp=datetime.datetime.utcnow(), color=discord.Color.default())
         await channel.send(embed=embed)
         
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        channel = bot.get_channel(985674998956060732)
+        embed = discord.Embed(title=f"{member.name} left", description=f"{member.mention} has left the server.", timestamp=datetime.datetime.utcnow(), color=discord.Color.default())
+        await channel.send(embed=embed)
+        
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):

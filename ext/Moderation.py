@@ -20,8 +20,6 @@ except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.E
 
 class Moderation(commands.Cog):
     def __init__(self, bot): self.bot = bot
-        
-    #TODO: Add auto moderation and custom filtered words
 
     #Warn system
     @commands.command(name="warn", brief="Warn a user")
