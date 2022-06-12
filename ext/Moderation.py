@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.ext import tasks
 
 
-with open('database-conf.json') as f:
+with open('./ext/database-conf.json') as f:
     config = json.load(f)
 
 try: #Everything
@@ -15,24 +15,78 @@ except mysql.connector.Error as err: print("You fucked up lmao" + str(err))
 class Moderation(commands.Cog):
     def __init__(self, bot): self.bot = bot
         
-    #TODO: Add mute/unmute, purge, auto moderation and custom filtered words
+    #TODO: Add auto moderation and custom filtered words
+    
+    #Auto moderation
+    # @commands.command(name="automod", brief="Enable or disable auto moderation")
+    # @commands.has_permissions(administrator=True)
+    # async def automod(self, ctx, enable: bool = None):
+    #     if enable is None:
+    #         await ctx.reply("Please specify whether you want to enable or disable auto moderation")
+    #         return
+    #     if enable:
+    #         cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET AutoMod = 1 WHERE ClientID = " + str(ctx.author.id) + ";")
+    #         cum.commit()
+    #         await ctx.reply("Auto moderation has been enabled")
+    #     else:
+    #         cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET AutoMod = 0 WHERE ClientID = " + str(ctx.author.id) + ";")
+    #         cum.commit()
+    #         await ctx.reply("Auto moderation has been disabled")
 
     #Warn system
-    # @commands.command(name="warn", brief="Warn a user")
-    # @commands.has_permissions(administrator=True)
-    # async def warn(self, ctx, user: discord.Member, *, reason: str):
-    #     if cum.is_connected(): pass
-    #     else: cum.reconnect(attempts=3)
-    #     cursor.execute("SELECT Warns FROM `" + str(ctx.guild.id) + "` WHERE ClientID = " + str(user.id) + ";")
-    #     warns = cursor.fetchone()
-    #     if warns[0] is None: warns = 0
-    #     else: warns = warns[0]
-    #     warns = warns + 1
-    #     cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET Warns = " + str(warns) + " WHERE ClientID = " + str(user.id) + ";")
-    #     cum.commit()
-    #     embed = discord.Embed(title="Warned", description=f"You have been warned in {ctx.guild.name} for {reason}", color=0x8E72BE)
-    #     await user.send(embed=embed)
-    #     await ctx.send(f"{user.mention} has been warned for {reason}")      
+    @commands.command(name="warn", brief="Warn a user")
+    @commands.has_permissions(administrator=True)
+    async def warn(self, ctx, user: discord.Member, *, reason: str):
+        if cum.is_connected(): pass
+        else: cum.reconnect(attempts=3)
+        if user is None:
+            await ctx.reply("Please specify a user to warn")
+            return
+        if reason is None: reason = "No reason given"
+        embed = discord.Embed(title="Warned", description=f"You have been warned in {ctx.guild.name} for {reason}", color=discord.Color.red())
+        await user.send(embed=embed)
+        try:
+            cursor.execute("SELECT Warns FROM `" + str(ctx.guild.id) + "` WHERE ClientID = " + str(user.id) + ";")
+            warns = cursor.fetchone()[0]
+            warns += 1
+            cursor.execute("UPDATE `" + str(ctx.guild.id) + "` SET Warns = " + str(warns) + " WHERE ClientID = " + str(user.id) + ";")
+            cum.commit()
+            await ctx.send(embed=discord.Embed(title=f"Warned {user.name}#{user.discriminator}", description=f"Successfully warned {user.name}#{user.discriminator} for {reason}", color=discord.Color.green()))
+            if warns == 3:
+                try:
+                    await ctx.send(embed=discord.Embed(title=f"Kicked {user.name}#{user.discriminator}", description=f"Successfully kicked {user.name}#{user.discriminator} for reaching 3 warns", color=discord.Color.green()))
+                    await user.send(embed=discord.Embed(title=f"Kicked", description=f"You have been kicked from {ctx.guild.name} for reaching 3 warns", color=discord.Color.red()))
+                    await user.kick(reason=reason)
+                except:
+                    await ctx.send(embed=discord.Embed(title=f"Failed to kick {user.name}#{user.discriminator}", description=f"Failed to kick {user.name}#{user.discriminator} for reaching 3 warns", color=discord.Color.red()))
+            elif warns == 5:
+                try:
+                    await ctx.send(embed=discord.Embed(title=f"Banned {user.name}#{user.discriminator}", description=f"Successfully banned {user.name}#{user.discriminator} for reaching 5 warns", color=discord.Color.green()))
+                    await user.send(embed=discord.Embed(title=f"Banned", description=f"You have been banned from {ctx.guild.name} for reaching 5 warns", color=discord.Color.red()))
+                    await user.ban(reason=reason)
+                except:
+                    await ctx.send(discord.Embed(title=f"Failed to ban {user.name}#{user.discriminator}", description=f"Failed to ban {user.name}#{user.discriminator} for reaching 5 warns", color=discord.Color.red()))
+        except:
+            #Add user to database
+            cursor.execute("INSERT INTO `" + str(ctx.guild.id) + "` (ClientID, Warns) VALUES (" + str(user.id) + ", 1);")
+            cum.commit()
+            await ctx.send(embed=discord.Embed(title=f"Warned {user.name}#{user.discriminator}", description=f"Successfully warned {user.name}#{user.discriminator} for {reason}", color=discord.Color.green()))
+            
+    @commands.command(name="warns", brief="Get the number of warns a user has")
+    @commands.has_permissions(administrator=True)
+    async def warns(self, ctx, user: discord.Member):
+        if cum.is_connected(): pass
+        else: cum.reconnect(attempts=3)
+        if user is None: await ctx.send(discord.Embed(title=f"You need to specify a user", color=discord.Color.red()))
+        cursor.execute("SELECT Warns FROM `" + str(ctx.guild.id) + "` WHERE ClientID = " + str(user.id) + ";")
+        warns = cursor.fetchone()[0]
+        if warns == 0: await ctx.send(embed=discord.Embed(title=f"{user.name}#{user.discriminator} has no warns", color=discord.Color.green()))
+        if warns == 1: await ctx.send(embed=discord.Embed(title=f"{user.name}#{user.discriminator} has 1 warn", color=discord.Color.green()))
+        else: await ctx.send(embed=discord.Embed(title=f"{user.name}#{user.discriminator} has {warns} warns", color=discord.Color.green()))
+        
+            
+        
+        
     
     @commands.command(name="mute", brief="Mute a user")
     @commands.has_permissions(manage_roles=True)
