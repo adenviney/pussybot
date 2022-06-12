@@ -113,11 +113,26 @@ class Events(commands.Cog):
                     await bot.get_channel(983392113746141204).send(embed=embed)
                     
         if message.channel.id == 985325859235835915:
-            await message.delete()
             embed = discord.Embed(title=f"Anonymous confession", description=f"{message.content}", timestamp=datetime.datetime.utcnow(), color=discord.Color.default())
+
+            if message.attachments:
+                if len(message.attachments) == 1:
+                    embed.add_field(name="Attachment", value=message.attachments[0].url)
+                    if message.attachments[0].url.endswith(('.jpg', '.png', '.jpeg', '.gif')): 
+                        extension = message.attachments[0].url.split(".")[-1]
+
+                        img_data = requests.get(message.attachments[0].url).content
+                        with open(f'attachments/{message.id}.{extension}', 'wb') as handler: handler.write(img_data)
+                        file = discord.File(f"attachments/{str(message.id)}.{str(extension)}", filename=f"image.{extension}")
+                        embed.set_image(url=f"attachment://image.{extension}")
+
+                        await bot.get_channel(943677015486267482).send(file=file, embed=embed)
+                        await message.delete()
+                        return
+            
+            
             await bot.get_channel(943677015486267482).send(embed=embed)
-            
-            
+            await message.delete()
         
            
         if message.author.bot: return
