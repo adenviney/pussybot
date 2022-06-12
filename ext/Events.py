@@ -1,6 +1,6 @@
-import datetime, discord, requests, re, random,  mysql.connector, json, os
+import datetime, discord, requests, re, random,  mysql.connector, json, os, lib.color as c
 from discord.ext import commands
-from pussybot import cnx, mycursor, bot, VERSION
+from pussybot import bot, VERSION
 
 
 #Database checks whether the user code is their code.
@@ -10,22 +10,15 @@ with open('./ext/database-conf3.json') as f:
 try: #Everything
     xd = mysql.connector.connect(**config)
     roux = xd.cursor()
-    print(f"Connected to {config['user']}")
-except mysql.connector.Error as err: #This is fine
-    print("You fucked up lmao" + str(err))
-print("Loaded events database successfully")
+except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
 
 with open('./ext/database-conf4.json') as f:
     config2 = json.load(f)
-
-with open('./ext/database-conf4.json') as f:
-    config2 = json.load(f)
+    
 try: #Everything
     cbx = mysql.connector.connect(**config2)
     csr = cbx.cursor()
-    print(f"Connected to {config2['user']}")
-except mysql.connector.Error as err: print("You fucked up lmao" + str(err))
-
+except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
 
 class Events(commands.Cog):
     def __init__(self, bot): 
@@ -97,9 +90,9 @@ class Events(commands.Cog):
             try:
                 await bot.get_channel(939685647025848380).send(file=file, embed=embed)
                 os.remove(f"attachments/{message.id}.{extension}")
-            except Exception as e:
-                print(e)
+            except:
                 return
+                
                 
 
     @commands.Cog.listener()
@@ -175,7 +168,6 @@ class Events(commands.Cog):
             embed.add_field(name="Author", value=f"{message_before.author} [{message_before.author.id}]", inline=True)
             embed.add_field(name="Before", value=message_before.content, inline=True)
             embed.add_field(name="After", value=message_after.content, inline=True)
-            ServerID = message_before.guild.id
                 
             if message_before.attachments:
                 if len(message_before.attachments) == 1:
@@ -190,20 +182,10 @@ class Events(commands.Cog):
                         file = discord.File("attachments/" + str(message_before.id) + "." + str(extension), filename=f"image.{extension}")
                         embed.set_image(url=f"attachment://image.{extension}")
                 
-            cnx.reconnect(attempts=3)
-            mycursor.execute(f"SELECT * FROM WCTable WHERE ServerID = {ServerID}")
-
-            result = mycursor.fetchall()
-
-            ChannelID = str(result[0]).split(", ")[1].replace(")", "")
-            ServerID = str(result[0]).split(", ")[0].replace("(", "")
-                
-                
-            ChannelToSend = bot.get_channel(int(ChannelID))
             try:
-                await ChannelToSend.send(file=file, embed=embed)
+                await bot.get_channel(939685647025848380).send(file=file, embed=embed)
             except: 
-                await ChannelToSend.send(embed=embed)
+                await bot.get_channel(939685647025848380).send(embed=embed)
         except:
             embed=discord.Embed(title=f"Message edited (click to view)", url=f"https://discord.com/channels/{message_before.guild.id}/{message_before.channel.id}/{message_before.id}", timestamp=datetime.datetime.utcnow(), color=0xFFFF00)
             embed.add_field(name="Author", value=f"{message_before.author} [{message_before.author.id}]", inline=True)
@@ -221,30 +203,18 @@ class Events(commands.Cog):
                             handler.write(img_data)
                         file = discord.File("attachments/" + str(message_before.id) + "." + str(extension), filename=f"image.{extension}")
                         embed.set_image(url=f"attachment://image.{extension}")
-                        
-            ServerID = message_before.guild.id
                 
-            #cnx.reconnect(attempts=3, delay=1)
-            mycursor.execute(f"SELECT * FROM WCTable WHERE ServerID = {ServerID}")
-
-            result = mycursor.fetchall()
-
-            ChannelID = str(result[0]).split(", ")[1].replace(")", "")
-            ServerID = str(result[0]).split(", ")[0].replace("(", "")
-                
-                
-            ChannelToSend = bot.get_channel(int(ChannelID))
             try:
-                await ChannelToSend.send(file=file, embed=embed)
+                await bot.get_channel(939685647025848380).send(file=file, embed=embed)
             except:
                 try:
-                    await ChannelToSend.send(embed=embed)
+                    await bot.get_channel(939685647025848380).send(embed=embed)
                 except:
                     embed=discord.Embed(title=f"CRITICAL ERROR", timestamp=datetime.datetime.utcnow(), color=discord.Color.red())
                     embed.add_field(name="What caused this?", value="Either a bug in Discord, or a bug in pussybot's code.", inline=True)
                     embed.add_field(name="How to fix?", value="tell gravy", inline=True)
                     embed.add_field(name="Author", value=f"{message_before.author} [{message_before.author.id}]", inline=True)
-                    await ChannelToSend.send(embed=embed)
+                    await bot.get_channel(939685647025848380).send(embed=embed)
                     
                     
     # @commands.Cog.listener()
@@ -267,4 +237,4 @@ class Events(commands.Cog):
 
         
 def setup(bot): bot.add_cog(Events(bot))
-print("Events cog loaded")
+print(c.color.GREEN + "Events cog loaded" + c.color.END)

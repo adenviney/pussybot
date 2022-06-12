@@ -1,4 +1,4 @@
-import random, discord, re
+import random, discord, re, lib.color as c
 from discord.ext import commands
 
 class Fun(commands.Cog):
@@ -71,4 +71,4 @@ class Fun(commands.Cog):
         
         await ctx.send(embed=embed)
 def setup(bot): bot.add_cog(Fun(bot))
-print("Fun cog loaded")
+print(c.color.GREEN + "Fun cog loaded" + c.color.END)

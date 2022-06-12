@@ -1,23 +1,12 @@
 import os, discord, mysql.connector, json
 from discord.ext import commands
 
-VERSION = "0.8.4"
+VERSION = "0.8.5"
 PATCHNOTES = f"""Pussybot v{VERSION} patchnotes
 [!] Open source code is available on GitHub: https://github.com/adenviney/pussybot
 
-[+] Added anonymous confession support
+[+] Added restricted/blacklisted words to the bot. Can be added using $arw <word> and removed using $rrw <word>. You can view the restricted words using $lrw.
 """
-
-with open('database-conf.json') as f:
-    config = json.load(f)
-
-try: #Everything
-    cnx = mysql.connector.connect(**config)
-    mycursor = cnx.cursor()
-    print(f"Connected to {config['user']}")
-except mysql.connector.Error as err: #This is fine
-    print("You fucked up lmao" + err)
-print("Loaded setup database successfully")
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='$', description="coolowo", intents=intents, help_command=None)

@@ -1,6 +1,5 @@
-import datetime, discord, mysql.connector, json
+import datetime, discord, mysql.connector, json, lib.color as c
 from discord.ext import commands
-from discord.ext import tasks
 
 
 with open('./ext/database-conf.json') as f:
@@ -12,14 +11,12 @@ with open('./ext/database-conf4.json') as f:
 try: #Everything
     cum = mysql.connector.connect(**config)
     cursor = cum.cursor()
-    print(f"Connected to {config['user']}")
-except mysql.connector.Error as err: print("You fucked up lmao" + str(err))
+except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
 
 try: #Everything
     cbx = mysql.connector.connect(**config2)
     csr = cbx.cursor()
-    print(f"Connected to {config2['user']}")
-except mysql.connector.Error as err: print("You fucked up lmao" + str(err))
+except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
 
 class Moderation(commands.Cog):
     def __init__(self, bot): self.bot = bot
@@ -290,4 +287,4 @@ class Moderation(commands.Cog):
             await ctx.reply(embed=embed)
         
 def setup(bot): bot.add_cog(Moderation(bot))
-print("Moderation cog loaded")
+print(c.color.GREEN + "Moderation cog loaded" + c.color.END)
