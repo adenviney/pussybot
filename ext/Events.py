@@ -233,11 +233,25 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         #if isinstance(error, commands.CommandNotFound):  return
         if isinstance(error, commands.errors.DisabledCommand): return
+        if isinstance(error, commands.errors.CommandNotFound): return
         if isinstance(error, commands.errors.CommandOnCooldown): 
             a = int(error.retry_after)
-            await ctx.send(embed=discord.Embed(title="Cooldown", description=f"{ctx.author.name}, You are on cooldown for {str(a)} seconds."))
+            #convert a into hours, minutes, seconds
+            months = a // 2678400
+            weeks = a // 604800
+            days = a // 86400
+            hours = a // 3600
+            minutes = (a % 3600) // 60
+            seconds = (a % 3600) % 60
+            #Add them all up into one string 
+            if months > 0: time = f"{months} months"
+            elif weeks > 0: time = f"{weeks} weeks"
+            elif days > 0: time = f"{days} days"
+            elif hours > 0: time = f"{hours} hours"
+            elif minutes > 0: time = f"{minutes} minutes"
+            elif seconds > 0: time = f"{seconds} seconds"
+            await ctx.send(embed=discord.Embed(title="Cooldown", description=f"{ctx.author.name}, you are on cooldown for {str(time)}."))
             return
-        if isinstance(error, commands.errors.CommandNotFound): return
         if hasattr(ctx.command, "on_error"): return
             
         error = getattr(error, "original", error)
