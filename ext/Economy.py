@@ -218,7 +218,7 @@ class Economy(commands.Cog):
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         if cursor.fetchone() is None:
-            await ctx.send(embed=discord.Embed(title="You don't have any coins to pay. Try depositing some coins", color=discord.Color.red()))
+            await ctx.send(embed=discord.Embed(title="You don't have any coins to pay. Try withdrawing some coins", color=discord.Color.red()))
             return
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
