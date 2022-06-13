@@ -1,4 +1,3 @@
-from ast import alias
 import discord, lib.color as c, mysql.connector, random, json
 from discord.ext import commands
 
