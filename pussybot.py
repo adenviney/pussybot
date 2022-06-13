@@ -5,7 +5,7 @@ VERSION = "0.8.7"
 PATCHNOTES = f"""Pussybot v{VERSION} patchnotes
 [!] Open source code is available on GitHub: https://github.com/adenviney/pussybot
 
-[+] Robbery update
+[+] Leaderboard update, can now access economy stats by running $economy <amount, default 10> <bank/coins> 
 """
 
 intents = discord.Intents.all()

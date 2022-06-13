@@ -7,8 +7,6 @@ def cleancode(content):
     else:
         return content
 
-
-
 class Pag(Paginator):
     async def teardown(self):
         try:
