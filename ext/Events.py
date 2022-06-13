@@ -233,6 +233,10 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         #if isinstance(error, commands.CommandNotFound):  return
         if isinstance(error, commands.errors.DisabledCommand): return
+        if isinstance(error, commands.errors.CommandOnCooldown): 
+            a = int(error.retry_after)
+            await ctx.send(embed=discord.Embed(title="Cooldown", description=f"{ctx.author.name}, You are on cooldown for {str(a)} seconds."))
+            return
         if hasattr(ctx.command, "on_error"): return
             
         error = getattr(error, "original", error)

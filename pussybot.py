@@ -1,4 +1,4 @@
-import os, discord, mysql.connector, json
+import os, discord, json
 from discord.ext import commands
 
 VERSION = "0.8.5"

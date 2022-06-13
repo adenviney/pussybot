@@ -1,7 +1,6 @@
-import lib.color as c
+import discord, lib.color as c
 from discord.ext import commands
 from pussybot import bot, PATCHNOTES
-from lib.evalcc import *
 
 class General(commands.Cog):
     def __init__(self, bot): self.bot = bot

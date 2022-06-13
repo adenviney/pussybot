@@ -24,13 +24,12 @@ class Moderation(commands.Cog):
     #Warn system
     @commands.command(name="warn", brief="Warn a user")
     @commands.has_permissions(administrator=True)
-    async def warn(self, ctx, user: discord.Member, *, reason: str):
+    async def warn(self, ctx, user: discord.Member, *, reason: str = "No reason given"):
         if cum.is_connected(): pass
         else: cum.reconnect(attempts=3)
         if user is None:
             await ctx.send(discord.Embed(title=f"You need to specify a user", color=discord.Color.red()))
             return
-        if reason is None: reason = "No reason given"
         embed = discord.Embed(title="Warned", description=f"You have been warned in {ctx.guild.name} for {reason}", color=discord.Color.red())
         await user.send(embed=embed)
         try:
