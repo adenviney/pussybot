@@ -104,7 +104,7 @@ class Economy(commands.Cog):
         else: connect.reconnect(attempts=3)
         try:
             if int(amount) == 0:
-                await ctx.send(embed=discord.Embed(title="Please specify an amount of coins to deposit.", color=discord.Color.red()))
+                await ctx.send(embed=discord.Embed(title="Please specify an amount of coins to withdraw.", color=discord.Color.red()))
                 return
             
         except:
@@ -223,7 +223,7 @@ class Economy(commands.Cog):
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         if cursor.fetchone()[0] < amount:
-            await ctx.send(embed=discord.Embed(title=f"You don't have enough coins to pay. `${addcomma(amount - tax)}` (+ `{tax}` tax)", color=discord.Color.red()))
+            await ctx.send(embed=discord.Embed(title=f"You don't have enough coins to pay `${addcomma(amount - tax)}` (+ `{tax}` tax)", color=discord.Color.red()))
             return
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(user.id)};")
