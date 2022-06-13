@@ -17,7 +17,7 @@ class Economy(commands.Cog):
     def __init__(self, bot): 
         self.bot = bot
         
-    #Commands: $invest, $buy, $sell, $work, $bal, $shop, $inventory, $use, $stats, $daily, $weekly, $monthly, $yearly, $economy, $pay
+    #Commands: $invest, $buy, $sell, $work, $shop, $inventory, $use, $stats, $daily, $weekly, $monthly, $yearly, $economy
         
     @commands.command(name="beg", brief="Beg for coins")
     @commands.cooldown(1, 30, commands.BucketType.user)
@@ -236,8 +236,51 @@ class Economy(commands.Cog):
         embed.add_field(name="Total", value=f"`${addcomma(amount)}`", inline=True)
         await ctx.send(embed=embed)
         
+    @commands.command(name="work", brief="Work for money", aliases=["labour"])
+    @commands.cooldown(1, 86400, commands.BucketType.user)
+    async def work(self, ctx):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
         
+        how_good_did_I_work = random.randint(1, 100)
+        pay = 45000
         
+        if how_good_did_I_work <= 25:
+            await ctx.send(embed=discord.Embed(title="You didn't work hard enough. You weren't payed.", color=discord.Color.red()))
+            return
+        elif how_good_did_I_work <= 50:
+            pay = (pay / 2)
+            await ctx.send(embed=discord.Embed(title=f"You worked decently, your pay was split in half: `${addcomma(pay)}`", color=discord.Color.gold()))
+            cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+            if cursor.fetchone() is None:
+                cursor.execute(f"INSERT INTO users (id, coins, bank) VALUES ({str(ctx.author.id)}, {str(0)}, {str(pay)});")
+                return
+            
+            cursor.execute(f"UPDATE users SET bank = bank + {str(pay)} WHERE id = {str(ctx.author.id)}")
+            connect.commit()
+            return
+        elif how_good_did_I_work <= 75:
+            await ctx.send(embed=discord.Embed(title=f"You worked hard, you got full pay: `${addcomma(pay)}`", color=discord.Color.green()))
+            cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+            if cursor.fetchone() is None:
+                cursor.execute(f"INSERT INTO users (id, coins, bank) VALUES ({str(ctx.author.id)}, {str(0)}, {str(pay)});")
+                return
+            
+            cursor.execute(f"UPDATE users SET bank = bank + {str(pay)} WHERE id = {str(ctx.author.id)}")
+            connect.commit()
+            return
+        elif how_good_did_I_work <= 90:
+            pay = (pay + random.randint(1, 100000))
+            await ctx.send(embed=discord.Embed(title=f"You worked really hard, you got a bonus: `${addcomma(pay)}`", color=discord.Color.blue()))
+            cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+            if cursor.fetchone() is None:
+                cursor.execute(f"INSERT INTO users (id, coins, bank) VALUES ({str(ctx.author.id)}, {str(0)}, {str(pay)});")
+                return
+            
+            cursor.execute(f"UPDATE users SET bank = bank + {str(pay)} WHERE id = {str(ctx.author.id)}")
+            connect.commit()
+            return
+            
         
             
     
