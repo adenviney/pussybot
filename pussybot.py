@@ -1,11 +1,11 @@
 import os, discord, json
 from discord.ext import commands
 
-VERSION = "0.8.6"
+VERSION = "0.8.7"
 PATCHNOTES = f"""Pussybot v{VERSION} patchnotes
 [!] Open source code is available on GitHub: https://github.com/adenviney/pussybot
 
-[+] Added economy commands
+[+] Robbery update
 """
 
 intents = discord.Intents.all()

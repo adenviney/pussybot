@@ -330,6 +330,67 @@ class Economy(commands.Cog):
         embed=discord.Embed(title=f"{ctx.author.name}'s coins", description=f"`${addcomma(self.monthly_pay)}` was added to your wallet!\n\nYour next monthly is in **1 month**")
         await ctx.send(embed=embed)
         
+        
+    @commands.command(name="rob", brief="Rob a user", aliases=["steal"])
+    @commands.cooldown(1, 300, commands.BucketType.user)
+    async def rob(self, ctx, user: discord.Member):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        if cursor.fetchone() is None:
+            cursor.execute(f"INSERT INTO users (id, coins, bank) VALUES ({str(ctx.author.id)}, {str(0)}, {str(0)});")
+            
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(user.id)};")
+        if cursor.fetchone() is None:
+            embed = discord.Embed(title="This user has no money in their wallet or bank. Not worth it bro", color=discord.Color.red())
+            await ctx.send(embed=embed)
+            
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(user.id)};")
+        coins = cursor.fetchone()[0]
+        
+        if coins == 0:
+            await ctx.send(embed=discord.Embed(title="This user has no money in their wallet. Not worth it bro", color=discord.Color.red()))
+            return
+            
+        amt = random.randint(1, coins)
+        
+        chance_of_robbing = random.randint(1, 100)
+        if chance_of_robbing <= 50:
+            await ctx.send(embed=discord.Embed(title="You got caught stealing from this user", color=discord.Color.red()))
+            cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+            coins = cursor.fetchone()[0]
+            cursor.execute(f"UPDATE users SET coins = coins - {str(coins / 2)} WHERE id = {str(ctx.author.id)}") # 50% of your coins are taken
+            return
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        coins = cursor.fetchone()[0]
+        cursor.execute(f"UPDATE users SET coins = coins + {str(amt)} WHERE id = {str(ctx.author.id)}")
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(user.id)};")
+        coins = cursor.fetchone()[0]
+        cursor.execute(f"UPDATE users SET coins = coins - {str(amt)} WHERE id = {str(user.id)}")
+        
+        #Create a variable called tiny_amt that is 25% of the users total coins
+        tiny_amt = coins / 4
+        medium_amt = coins / 2
+        big_amt = coins / .5
+        
+        #Check if amount stolen is a tiny amount, medium amount, or big amount
+        if amt <= tiny_amt: 
+            embed = discord.Embed(title=f"You stole a tiny amount (`${addcomma(amt)}`) from {user.name}", color=discord.Color.green())
+            await ctx.send(embed=embed)
+            return
+        elif amt <= medium_amt: 
+            embed = discord.Embed(title=f"You stole a decent amount (`${addcomma(amt)})` from {user.name}", color=discord.Color.green())
+            await ctx.send(embed=embed)
+            return
+        elif amt <= big_amt:
+            embed = discord.Embed(title=f"You stole a load! (`${addcomma(amt)}`) from {user.name}", color=discord.Color.green())
+            await ctx.send(embed=embed)
+            return
+        
+        
             
     
         
