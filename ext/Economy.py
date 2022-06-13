@@ -13,11 +13,15 @@ except mysql.connector.Error as err:
 
 def addcomma(amount): 
     return ("{:,}".format(amount))
+
 class Economy(commands.Cog):    
     def __init__(self, bot): 
         self.bot = bot
+        self.daily_pay = 25000
+        self.weekly_pay = 50000
+        self.monthly_pay = 100000
         
-    #Commands: $invest, $buy, $sell, $work, $shop, $inventory, $use, $stats, $daily, $weekly, $monthly, $yearly, $economy
+    #Commands: $invest, $buy, $sell, $shop, $inventory, $use, $stats, $daily, $weekly, $monthly, $yearly, $economy
         
     @commands.command(name="beg", brief="Beg for coins")
     @commands.cooldown(1, 30, commands.BucketType.user)
@@ -281,6 +285,53 @@ class Economy(commands.Cog):
             connect.commit()
             return
             
+    @commands.command(name="daily", brief="Get your daily coins")
+    @commands.cooldown(1, 86400, commands.BucketType.user)
+    async def daily(self, ctx):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        if cursor.fetchone() is None:
+            cursor.execute(f"INSERT INTO users (id, coins, bank) VALUES ({str(ctx.author.id)}, {str(0)}, {str(0)});")
+            
+        cursor.execute(f"UPDATE users SET coins = coins + {str(self.daily_pay)} WHERE id = {str(ctx.author.id)}")
+        connect.commit()
+        embed=discord.Embed(title=f"{ctx.author.name}'s coins", description=f"`${addcomma(self.daily_pay)}` was added to your wallet!\n\nYour next daily is in **1 day**")
+        await ctx.send(embed=embed)
+        
+    @commands.command(name="weekly", brief="Get your weekly coins")
+    @commands.cooldown(1, 604800, commands.BucketType.user)
+    async def weekly(self, ctx):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        if cursor.fetchone() is None:
+            cursor.execute(f"INSERT INTO users (id, coins, bank) VALUES ({str(ctx.author.id)}, {str(0)}, {str(0)});")
+            
+        cursor.execute(f"UPDATE users SET coins = coins + {str(self.weekly_pay)} WHERE id = {str(ctx.author.id)}")
+        connect.commit()
+        embed=discord.Embed(title=f"{ctx.author.name}'s coins", description=f"`${addcomma(self.weekly_pay)}` was added to your wallet!\n\nYour next weekly is in **1 week**")
+        await ctx.send(embed=embed)
+        
+    @commands.command(name="monthly", brief="Get your monthly coins")
+    @commands.cooldown(1, 2678400, commands.BucketType.user)
+    async def monthly(self, ctx):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        if cursor.fetchone() is None:
+            cursor.execute(f"INSERT INTO users (id, coins, bank) VALUES ({str(ctx.author.id)}, {str(0)}, {str(0)});")
+            
+        cursor.execute(f"UPDATE users SET coins = coins + {str(self.monthly_pay)} WHERE id = {str(ctx.author.id)}")
+        connect.commit()
+        embed=discord.Embed(title=f"{ctx.author.name}'s coins", description=f"`${addcomma(self.monthly_pay)}` was added to your wallet!\n\nYour next monthly is in **1 month**")
+        await ctx.send(embed=embed)
+        
+            
+    
         
             
     
