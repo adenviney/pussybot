@@ -360,8 +360,17 @@ class Economy(commands.Cog):
             await ctx.send(embed=discord.Embed(title="You got caught stealing from this user", color=discord.Color.red()))
             cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
             coins = cursor.fetchone()[0]
-            cursor.execute(f"UPDATE users SET coins = coins - {str(coins / 2)} WHERE id = {str(ctx.author.id)}") # 50% of your coins are taken
-            return
+            if coins > 0:   
+                cursor.execute(f"UPDATE users SET coins = coins - {str(coins / 2)} WHERE id = {str(ctx.author.id)}") # 50% of your coins are taken
+                return
+            else:
+                cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+                bank = cursor.fetchone()[2]
+                if bank > 0:
+                    cursor.execute(f"UPDATE users SET bank = bank - {str(bank / 2)} WHERE id = {str(ctx.author.id)}")
+                    return
+                else:
+                    cursor.execute(f"UPDATE users SET bank = -100000 WHERE id = {str(ctx.author.id)}")
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         coins = cursor.fetchone()[0]
@@ -388,6 +397,37 @@ class Economy(commands.Cog):
         elif amt <= big_amt:
             embed = discord.Embed(title=f"You stole a load! (`${addcomma(amt)}`) from {user.name}", color=discord.Color.green())
             await ctx.send(embed=embed)
+            return
+        
+    @commands.command(name="economy", brief="See the top X users")
+    async def economy(self, ctx, amount: int = 10, type: str = "bank"):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
+        
+        if amount == 0: amount = 10
+        
+        if type == "coins":
+            cursor.execute(f"SELECT * FROM users ORDER BY coins DESC LIMIT {str(amount)};")
+            users = cursor.fetchall()
+            embed = discord.Embed(title="Top users")
+            for i in range(len(users)):
+                user = self.bot.get_user(users[i][1])
+                embed.add_field(name=f"{i + 1}. {user.name}", value=f"Coins: `${addcomma(users[i][0])}`", inline=False)
+            await ctx.send(embed=embed)
+            connect.commit()
+            return
+        elif type == "bank":
+            cursor.execute(f"SELECT * FROM users ORDER BY bank DESC LIMIT {str(amount)};")
+            users = cursor.fetchall()
+            embed = discord.Embed(title="Top users")
+            for i in range(len(users)):
+                user = self.bot.get_user(users[i][1])
+                embed.add_field(name=f"{i + 1}. {user.name}", value=f"Bank: `${addcomma(users[i][2])}`", inline=False)
+            await ctx.send(embed=embed)
+            connect.commit()
+            return
+        else:
+            await ctx.send(embed=discord.Embed(title="Invalid type, types are **coins** or **bank**", color=discord.Color.red()))
             return
         
         
