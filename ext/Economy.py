@@ -2,7 +2,7 @@ from ast import alias
 import discord, lib.color as c, mysql.connector, random, json
 from discord.ext import commands
 
-with open('./ext/database-conf5.json') as f: 
+with open('./json/database-conf5.json') as f: 
     config = json.load(f)
 
 try: #Everything

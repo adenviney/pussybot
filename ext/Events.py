@@ -4,7 +4,7 @@ from pussybot import bot, VERSION
 
 
 #Database checks whether the user code is their code.
-with open('./ext/database-conf3.json') as f:
+with open('./json/database-conf3.json') as f:
     config = json.load(f)
 
 try: #Everything
@@ -12,7 +12,7 @@ try: #Everything
     roux = xd.cursor()
 except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
 
-with open('./ext/database-conf4.json') as f:
+with open('./json/database-conf4.json') as f:
     config2 = json.load(f)
     
 try: #Everything

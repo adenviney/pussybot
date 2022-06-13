@@ -1,11 +1,11 @@
 import os, discord, json
 from discord.ext import commands
 
-VERSION = "0.8.5"
+VERSION = "0.8.6"
 PATCHNOTES = f"""Pussybot v{VERSION} patchnotes
 [!] Open source code is available on GitHub: https://github.com/adenviney/pussybot
 
-[+] Added restricted/blacklisted words to the bot. Can be added using $arw <word> and removed using $rrw <word>. You can view the restricted words using $lrw.
+[+] Added economy commands
 """
 
 intents = discord.Intents.all()
@@ -19,7 +19,7 @@ for extension in os.listdir("./ext"):
             print('Failed to load extension {}\n{}: {}'.format(extension, type(e).__name__, e))
 
 print('Initialized')
-with open("tkn.json") as f: 
+with open("./json/tkn.json") as f: 
     token = json.load(f)["token"]
     
 bot.run(f"{token}")

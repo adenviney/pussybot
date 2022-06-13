@@ -41,12 +41,12 @@ Next, adding the bot token.
 At the bottom of `master/pussybot.py` you should see this:
 
 ```py
-with open("tkn.json") as f:
+with open("./json/tkn.json") as f:
 	token = json.load(f)["token"]
 bot.run(f"{token}")
 ```
 
-You can go ahead and remove the first two lines and just paste your token in there, *or* you could make a json file that should look like this:
+You can go ahead and remove the first two lines and just paste your token in there, *or* you could make a json file **in a folder called json** that should look like this:
 
 ```json
 {

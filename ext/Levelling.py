@@ -1,7 +1,7 @@
 import asyncio,discord,random, mysql.connector, json, lib.color as c
 from discord.ext import commands
 
-with open('./ext/database-conf2.json') as f:
+with open('./json/database-conf2.json') as f:
     config = json.load(f)
 
 try: #Everything

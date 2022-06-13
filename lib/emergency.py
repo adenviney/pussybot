@@ -11,5 +11,5 @@ async def restore(ctx):
     os.system("python ../pussybot.py")
 
 print('BOT RESTARTED IN EMERGENCY MODE, RUN COMMAND $RESTORE TO RESTORE BACK')            
-with open("../tkn.json") as f: token = json.load(f)["token"]
+with open("../json/tkn.json") as f: token = json.load(f)["token"]
 bot.run(token)

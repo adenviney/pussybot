@@ -2,10 +2,10 @@ import datetime, discord, mysql.connector, json, lib.color as c
 from discord.ext import commands
 
 
-with open('./ext/database-conf.json') as f:
+with open('./json/database-conf.json') as f:
     config = json.load(f)
 
-with open('./ext/database-conf4.json') as f:
+with open('./json/database-conf4.json') as f:
     config2 = json.load(f)
 
 try: #Everything
