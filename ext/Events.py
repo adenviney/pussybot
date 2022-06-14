@@ -1,4 +1,4 @@
-import datetime, discord, requests, re, random,  mysql.connector, json, os, lib.color as c
+import datetime, discord, requests, re, random,  mysql.connector, json, os, lib.color as c, lib.AI as AI
 from discord.ext import commands
 from pussybot import bot, VERSION
 
@@ -147,6 +147,12 @@ class Events(commands.Cog):
             
             await bot.get_channel(943677015486267482).send(embed=embed)
             await message.delete()
+        
+        if message.channel.id == 986085778625032192:
+            if message.author.id == bot.user.id: return
+            #Call AI API
+            resp = AI.ask(message.content)
+            await message.channel.send(embed=discord.Embed(title="Response", description=resp, color=0x36393F))
         
         #Automod
         if cbx.is_connected(): pass
