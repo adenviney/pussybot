@@ -1,3 +1,4 @@
+import re
 import discord, lib.color as c, mysql.connector, random, json
 from discord.ext import commands
 
@@ -6,7 +7,7 @@ with open('./json/database-conf5.json') as f:
 
 try: #Everything
     connect = mysql.connector.connect(**config)
-    cursor = connect.cursor()
+    cursor = connect.cursor(buffered=True)
 except mysql.connector.Error as err: 
     print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
 
@@ -20,7 +21,7 @@ class Economy(commands.Cog):
         self.weekly_pay = 50000
         self.monthly_pay = 100000
         
-    #Commands: $invest, $buy, $sell, $shop, $inventory, $use, $stats, $daily, $weekly, $monthly, $yearly, $economy
+    #Commands: $invest, $buy, $sell, $shop, $inventory, $use, $stats
         
     @commands.command(name="beg", brief="Beg for coins")
     @commands.cooldown(1, 30, commands.BucketType.user)
@@ -379,12 +380,10 @@ class Economy(commands.Cog):
         coins = cursor.fetchone()[0]
         cursor.execute(f"UPDATE users SET coins = coins - {str(amt)} WHERE id = {str(user.id)}")
         
-        #Create a variable called tiny_amt that is 25% of the users total coins
         tiny_amt = coins / 4
         medium_amt = coins / 2
         big_amt = coins / .5
         
-        #Check if amount stolen is a tiny amount, medium amount, or big amount
         if amt <= tiny_amt: 
             embed = discord.Embed(title=f"You stole a tiny amount (`${addcomma(amt)}`) from {user.name}", color=discord.Color.green())
             await ctx.send(embed=embed)
@@ -428,9 +427,68 @@ class Economy(commands.Cog):
         else:
             await ctx.send(embed=discord.Embed(title="Invalid type, types are **coins** or **bank**", color=discord.Color.red()))
             return
+    
+    @commands.command(name="stock", brief="See the stock market", aliases=["stocks"])
+    async def stock(self, ctx):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
         
+        cursor.execute(f"SELECT * FROM stocks ORDER BY price DESC ")
+        stocks = cursor.fetchall()
+        embed = discord.Embed(title="Stock market", color=discord.Color.green())
+        for i in range(len(stocks)):
+            embed.add_field(name=f"{i + 1}. {stocks[i][1]}", value=f"Price: `${addcomma(stocks[i][0])}`", inline=False)
+            
+        await ctx.send(embed=embed)
+        connect.commit()
+        return
+        
+    @commands.command(name="invest", brief="Invest in the stock market")
+    @commands.cooldown(1, 300, commands.BucketType.user)
+    async def invest(self, ctx, amount: int, stock: str):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
+        
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        if cursor.fetchone() is None:
+            embed = discord.Embed(title="You can't invest if you don't have a bank.", color=discord.Color.red())
+            await ctx.send(embed=embed)
+            return
+
+        
+        cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
+        if cursor.fetchone() is None:
+            embed = discord.Embed(title="That stock doesn't exist.", color=discord.Color.red())
+            await ctx.send(embed=embed)
+            return
+
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        bank = cursor.fetchone()[2]
+        if bank < amount:
+            embed = discord.Embed(title="You can't invest that much.", color=discord.Color.red())
+            await ctx.send(embed=embed)
+            return
+
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        bank = cursor.fetchone()[2]
+
+        if bank > 0:
+            cursor.execute(f"UPDATE users SET bank = bank - {str(amount)} WHERE id = {str(ctx.author.id)}")
         
             
+        new_amt = amount / 10
+        cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
+        cursor.execute(f"UPDATE stocks SET price = price + {str(new_amt)} WHERE name = '{stock}'")
+        
+        embed = discord.Embed(title=f"You invested `${addcomma(amount)}` in {stock}", color=discord.Color.green())
+        await ctx.send(embed=embed)
+        connect.commit()
+        return
+        
+
     
         
             

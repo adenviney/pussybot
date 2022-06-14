@@ -1,5 +1,5 @@
 import datetime, discord, requests, re, random,  mysql.connector, json, os, lib.color as c, lib.AI as AI
-from discord.ext import commands
+from discord.ext import commands, tasks
 from pussybot import bot, VERSION
 
 
@@ -20,12 +20,22 @@ try: #Everything
     csr = cbx.cursor()
 except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
 
+with open('./json/database-conf5.json') as f: 
+    config3 = json.load(f)
+
+try: #Everything
+    connect = mysql.connector.connect(**config3)
+    cursor = connect.cursor(buffered=True)
+except mysql.connector.Error as err: 
+    print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
+
 class Events(commands.Cog):
     def __init__(self, bot): 
         self.bot = bot
         self.version = VERSION
         self.max_window = 5
         self.window_time_ms = 5000
+        self.stockloop.start()
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -150,6 +160,7 @@ class Events(commands.Cog):
         
         if message.channel.id == 986085778625032192:
             if message.author.id == bot.user.id: return
+            if message.content.startswith("#"): return
             #Call AI API
             resp = AI.ask(message.content)
             await message.channel.send(embed=discord.Embed(title="Response", description=resp, color=0x36393F))
@@ -232,7 +243,24 @@ class Events(commands.Cog):
     # @commands.Cog.listener()
     # async def on_reaction_added(self, reaction, user):
         
+    @tasks.loop(seconds=10)
+    async def stockloop(self):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
         
+        print("Stock loop started")
+        #Randomly change stock prices up or down to simulate market movement
+        cursor.execute("SELECT * FROM stocks")
+        result = cursor.fetchall()
+        for i in result:
+            minus_or_plus = random.choice(["-", "+"])
+            #Stop stocks from going below 0
+            if i[0] <= 200: minus_or_plus = "+"
+                
+            cursor.execute(f"UPDATE stocks SET price = price {minus_or_plus} {random.randint(1, 200)} WHERE name = '{i[1]}'")
+            connect.commit()
+                
+            
 
 
     @commands.Cog.listener()
@@ -263,9 +291,6 @@ class Events(commands.Cog):
         error = getattr(error, "original", error)
         em = discord.Embed(title="Error", description=str(error).capitalize(), color=discord.Color.red(), timestamp=datetime.datetime.utcnow())
         await ctx.send(embed=em, delete_after=5.0)
-        
-    
 
-        
 def setup(bot): bot.add_cog(Events(bot))
 print(c.color.GREEN + "Events cog loaded" + c.color.END)
