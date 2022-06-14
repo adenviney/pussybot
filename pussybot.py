@@ -5,7 +5,7 @@ VERSION = "0.8.7"
 PATCHNOTES = f"""Pussybot v{VERSION} patchnotes
 [!] Open source code is available on GitHub: https://github.com/adenviney/pussybot
 
-[+] AI update, available in #pb-ai
+[+] Stocks update, $stocks, $invest!
 """
 
 intents = discord.Intents.all()
