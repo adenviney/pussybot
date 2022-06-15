@@ -573,23 +573,13 @@ class Economy(commands.Cog):
         
         cursor.execute(f"UPDATE users SET bank = bank + {str(price * shares)} WHERE id = {str(ctx.author.id)}") 
 
-        if stock == "AAPL": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'AAPL'")
-        elif stock == "GOOGL": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'GOOGL'")
-        elif stock == "AMZN": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'AMZN'")
-        elif stock == "NVA": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'NVA'")
+        cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = '{stock}'")
         
-        if stock == "AAPL":
-            shares1[0] = int(int(AAPL) - shares)
-            cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
-        elif stock == "GOOGL":
-            shares1[1] = int(int(GOOGL) - shares)
-            cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
-        elif stock == "AMZN":
-            shares1[2] = int(int(AMZN) - shares)
-            cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
-        elif stock == "NVA":
-            shares1[3] = int(int(NVA) - shares)
-            cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
+        shares1[0] = int(int(AAPL) - shares)
+        shares1[1] = int(int(GOOGL) - shares)
+        shares1[2] = int(int(AMZN) - shares)
+        shares1[3] = int(int(NVA) - shares)
+        cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
         
         embed = discord.Embed(title=f"You sold `${addcomma(price * shares)}` in {stock}", color=discord.Color.green())
         await ctx.send(embed=embed)
