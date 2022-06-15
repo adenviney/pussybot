@@ -444,7 +444,7 @@ class Economy(commands.Cog):
         return
         
     @commands.command(name="invest", brief="Invest in the stock market")
-    @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def invest(self, ctx, shares: int, stock: str):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
@@ -508,7 +508,7 @@ class Economy(commands.Cog):
         return
     
     @commands.command(name="sell", brief="Sell a stock")
-    @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def sell(self, ctx, stock: str, shares: int = 1):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
