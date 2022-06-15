@@ -185,7 +185,7 @@ class Moderation(commands.Cog):
             embed.set_footer(text=f"Kicked by {ctx.author}", icon_url=f"{ctx.author.avatar}")
             await ctx.reply(embed=embed)
         except Exception as e:
-            if e == "403 Forbidden (error code: 50007): Cannot send messages to this user": 
+            if e == "400 Bad Request (error code: 50007): Cannot send messages to this user": 
                 await member.kick(reason=reason)
                 embed = discord.Embed(title=f"✅ Kicked {member} ({member.id})", description=f"Executed successfully", timestamp=datetime.datetime.utcnow(), color=discord.Color.green())
                 embed.add_field(name="Reason", value=reason, inline=True)

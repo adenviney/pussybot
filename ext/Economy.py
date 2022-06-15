@@ -45,7 +45,7 @@ class Economy(commands.Cog):
         else:  
             cursor.execute(f"UPDATE users SET coins = coins + {str(amount)} WHERE id = {str(ctx.author.id)}")
             connect.commit()
-        embed = discord.Embed(title=f"You were given `${amount}` coins for begging.", color=discord.Color.green())
+        embed = discord.Embed(title=f"You were given `${amount}` coins for begging.")
         embed.set_footer(text="What a begger you are.")
         await ctx.send(embed=embed)
         
@@ -88,7 +88,7 @@ class Economy(commands.Cog):
         cursor.execute(f"UPDATE users SET coins = coins - {str(amount)} WHERE id = {str(ctx.author.id)}")
         cursor.execute(f"UPDATE users SET bank = bank + {str(amount)} WHERE id = {str(ctx.author.id)}")
         connect.commit()
-        await ctx.send(embed=discord.Embed(title=f"You deposited `${addcomma(amount)}` coins.", color=discord.Color.green()))
+        await ctx.send(embed=discord.Embed(title=f"You deposited `${addcomma(amount)}` coins."))
         
     @commands.command(name="withdraw", brief="Withdraw coins", aliases=["with"])
     async def withdraw(self, ctx, amount: str = 0):
@@ -129,7 +129,7 @@ class Economy(commands.Cog):
         cursor.execute(f"UPDATE users SET coins = coins + {str(amount)} WHERE id = {str(ctx.author.id)}")
         cursor.execute(f"UPDATE users SET bank = bank - {str(amount)} WHERE id = {str(ctx.author.id)}")
         connect.commit()
-        await ctx.send(embed=discord.Embed(title=f"You withdrew `${addcomma(amount)}` coins.", color=discord.Color.green()))
+        await ctx.send(embed=discord.Embed(title=f"You withdrew `${addcomma(amount)}` coins."))
         
     @commands.command(name="balance", brief="Check your balance", aliases=["bal"])
     async def bal(self, ctx, user: discord.Member = None):
@@ -147,7 +147,7 @@ class Economy(commands.Cog):
             coins = cursor.fetchone()[0]
             cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
             bank = cursor.fetchone()[2]
-            embed = discord.Embed(title="Balance", description=f"**Wallet:** `${addcomma(coins)}`\n**Bank:** `${addcomma(bank)}`", color=discord.Color.green())
+            embed = discord.Embed(title="Balance", description=f"**Wallet:** `${addcomma(coins)}`\n**Bank:** `${addcomma(bank)}`",)
             await ctx.send(embed=embed)
             connect.commit()
             return
@@ -162,7 +162,7 @@ class Economy(commands.Cog):
             coins = cursor.fetchone()[0]
             cursor.execute(f"SELECT * FROM users WHERE id = {str(user.id)};")
             bank = cursor.fetchone()[2]
-            embed = discord.Embed(title=f"{user.name}#{user.discriminator}'s Balance", description=f"**Wallet:** `${addcomma(coins)}`\n**Bank:** `${addcomma(bank)}`", color=discord.Color.green())
+            embed = discord.Embed(title=f"{user.name}#{user.discriminator}'s balance", description=f"**Wallet:** `${addcomma(coins)}`\n**Bank:** `${addcomma(bank)}`")
             await ctx.send(embed=embed)
             connect.commit()
             return
@@ -226,7 +226,7 @@ class Economy(commands.Cog):
         cursor.execute(f"UPDATE users SET coins = coins - {str(amount)} WHERE id = {str(ctx.author.id)}")
         cursor.execute(f"UPDATE users SET coins = coins + {str(amount - tax)} WHERE id = {str(user.id)}")
         connect.commit()
-        embed=discord.Embed(title=f"You paid {user.name}", color=discord.Color.green())
+        embed=discord.Embed(title=f"You paid {user.name}")
         embed.add_field(name="Amount", value=f"`${addcomma(amount - tax)}`", inline=True)
         embed.add_field(name="Tax", value=f"`${addcomma(tax)}`", inline=True)
         embed.add_field(name="Total", value=f"`${addcomma(amount)}`", inline=True)
@@ -256,7 +256,7 @@ class Economy(commands.Cog):
             connect.commit()
             return
         elif how_good_did_I_work <= 75:
-            await ctx.send(embed=discord.Embed(title=f"You worked hard, you got full pay: `${addcomma(pay)}`", color=discord.Color.green()))
+            await ctx.send(embed=discord.Embed(title=f"You worked hard, you got full pay: `${addcomma(pay)}`"))
             cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
             if cursor.fetchone() is None:
                 cursor.execute(f"INSERT INTO users (id, coins, bank) VALUES ({str(ctx.author.id)}, {str(0)}, {str(pay)});")
@@ -379,15 +379,15 @@ class Economy(commands.Cog):
         big_amt = coins / .5
         
         if amt <= tiny_amt: 
-            embed = discord.Embed(title=f"You stole a tiny amount (`${addcomma(amt)}`) from {user.name}", color=discord.Color.green())
+            embed = discord.Embed(title=f"You stole a tiny amount (`${addcomma(amt)}`) from {user.name}")
             await ctx.send(embed=embed)
             return
         elif amt <= medium_amt: 
-            embed = discord.Embed(title=f"You stole a decent amount (`${addcomma(amt)})` from {user.name}", color=discord.Color.green())
+            embed = discord.Embed(title=f"You stole a decent amount (`${addcomma(amt)})` from {user.name}")
             await ctx.send(embed=embed)
             return
         elif amt <= big_amt:
-            embed = discord.Embed(title=f"You stole a load! (`${addcomma(amt)}`) from {user.name}", color=discord.Color.green())
+            embed = discord.Embed(title=f"You stole a load! (`${addcomma(amt)}`) from {user.name}")
             await ctx.send(embed=embed)
             return
         
@@ -429,7 +429,7 @@ class Economy(commands.Cog):
         
         cursor.execute(f"SELECT * FROM stocks ORDER BY price DESC ")
         stocks = cursor.fetchall()
-        embed = discord.Embed(title="Stock market", color=discord.Color.green())
+        embed = discord.Embed(title="Stock market")
         for i in range(len(stocks)):
             embed.add_field(name=f"{i + 1}. {stocks[i][1]}", value=f"Price: `${addcomma(stocks[i][0])}` `{stocks[i][2]}`", inline=False)
             
@@ -462,8 +462,11 @@ class Economy(commands.Cog):
         bank = cursor.fetchone()[2]
         
         how_much_to_pay = (shares * stock_price)
+        tax = round(how_much_to_pay / 100) 
+        how_much_to_pay = (how_much_to_pay + tax) 
+        
         if bank < how_much_to_pay:
-            embed = discord.Embed(title=f"You don't have enough money to invest `{str(shares)}` shares in this stock.", color=discord.Color.red())
+            embed = discord.Embed(title=f"You don't have enough money to invest `{str(shares)}` shares in this stock. (+ `{tax}` tax)", color=discord.Color.red())
             await ctx.send(embed=embed)
             return
         
@@ -497,7 +500,12 @@ class Economy(commands.Cog):
         cursor.execute(f"UPDATE stocks SET price = price + {str(b)} WHERE name = '{stock}'")
                     
         connect.commit()
-        embed = discord.Embed(title=f"You have bought `{str(shares)}` shares of `{stock}`. Total: `${addcomma(how_much_to_pay)}`", color=discord.Color.green())
+        embed = discord.Embed(title=f"Investment")
+        embed.add_field(name="Stock", value=f"{stock}", inline=False)
+        embed.add_field(name="Shares", value=f"`{shares}`", inline=False)
+        embed.add_field(name="Share price", value=f"`${addcomma(stock_price)}`", inline=False)
+        embed.add_field(name="Tax", value=f"`${addcomma(tax)}`", inline=False)
+        embed.add_field(name="Total", value=f"`${addcomma(how_much_to_pay)}`", inline=False)
         await ctx.send(embed=embed)
         return
     
@@ -571,7 +579,10 @@ class Economy(commands.Cog):
         cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
         price = cursor.fetchone()[0]
         
-        cursor.execute(f"UPDATE users SET bank = bank + {str(price * shares)} WHERE id = {str(ctx.author.id)}") 
+        tax = round(price / 100) 
+        how_much_you_get = (price - tax)
+                
+        cursor.execute(f"UPDATE users SET bank = bank + {str(how_much_you_get * shares)} WHERE id = {str(ctx.author.id)}") 
 
         cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = '{stock}'")
         
@@ -581,7 +592,12 @@ class Economy(commands.Cog):
         shares1[3] = int(int(NVA) - shares)
         cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
         
-        embed = discord.Embed(title=f"You sold `${addcomma(price * shares)}` in {stock}", color=discord.Color.green())
+        embed = discord.Embed(title=f"Sold successfully")
+        embed.add_field(name="Stock", value=f"{stock}", inline=False)
+        embed.add_field(name="Shares", value=f"`{shares}`", inline=False)
+        embed.add_field(name="Share price", value=f"`${addcomma(price)}`", inline=False)
+        embed.add_field(name="Tax", value=f"`-${addcomma(tax)} per share`", inline=False)
+        embed.add_field(name="Total earned", value=f"`${addcomma(how_much_you_get * shares)}`", inline=False)
         await ctx.send(embed=embed)
         connect.commit()
         return

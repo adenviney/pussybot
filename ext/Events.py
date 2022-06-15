@@ -259,13 +259,13 @@ class Events(commands.Cog):
             minutes = (a % 3600) // 60
             seconds = (a % 3600) % 60
             #Add them all up into one string 
-            if months > 0: time = f"{months} months"
-            elif weeks > 0: time = f"{weeks} weeks"
-            elif days > 0: time = f"{days} days"
-            elif hours > 0: time = f"{hours} hours"
-            elif minutes > 0: time = f"{minutes} minute(s)"
-            elif seconds > 0: time = f"{seconds} seconds"
-            await ctx.send(embed=discord.Embed(title="Cooldown", description=f"{ctx.author.name}, you are on cooldown for {str(time)}."))
+            if months > 0: time = f"{months} more months"
+            elif weeks > 0: time = f"{weeks} more weeks"
+            elif days > 0: time = f"{days} more days"
+            elif hours > 0: time = f"{hours} more hours"
+            elif minutes > 0: time = f"{minutes} more minute(s)"
+            elif seconds > 0: time = f"{seconds} more seconds"
+            await ctx.send(embed=discord.Embed(title="Woah, slow it down there", description=f"{ctx.author.name}, you are on cooldown for {str(time)}."))
             return
         if hasattr(ctx.command, "on_error"): return
             
