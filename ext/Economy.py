@@ -276,6 +276,8 @@ class Economy(commands.Cog):
             cursor.execute(f"UPDATE users SET bank = bank + {str(pay)} WHERE id = {str(ctx.author.id)}")
             connect.commit()
             return
+        else:
+            await ctx.send(embed=discord.Embed(title=f"your boss forgot to pay you", color=discord.Color.red()))
             
     @commands.command(name="daily", brief="Get your daily coins")
     @commands.cooldown(1, 86400, commands.BucketType.user)
@@ -435,9 +437,9 @@ class Economy(commands.Cog):
         connect.commit()
         return
         
-    @commands.command(name="invest", brief="Invest in the stock market")
+    @commands.command(name="invest", brief="Invest in the stock market", aliases=["buy"])
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def invest(self, ctx, shares: int, stock: str):
+    async def invest(self, ctx, stock: str, shares: int):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
                 
@@ -495,13 +497,13 @@ class Economy(commands.Cog):
         cursor.execute(f"UPDATE stocks SET price = price + {str(b)} WHERE name = '{stock}'")
                     
         connect.commit()
-        embed = discord.Embed(title=f"You have invested `{str(shares)}` shares in `{stock}`. Total: `${addcomma(how_much_to_pay)}`", color=discord.Color.green())
+        embed = discord.Embed(title=f"You have bought `{str(shares)}` shares of `{stock}`. Total: `${addcomma(how_much_to_pay)}`", color=discord.Color.green())
         await ctx.send(embed=embed)
         return
     
     @commands.command(name="sell", brief="Sell a stock")
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def sell(self, ctx, stock: str, shares: int = 1):
+    async def sell(self, ctx, stock: str, shares: str = "1"):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
         
@@ -527,6 +529,20 @@ class Economy(commands.Cog):
         GOOGL = shares1[1]
         AMZN = shares1[2]
         NVA = shares1[3]
+        
+        try:
+            shares = int(shares)
+        except:
+            if str(shares) == "all":
+                if stock == "AAPL": shares = int(AAPL)
+                elif stock == "GOOGL": shares = int(GOOGL)
+                elif stock == "AMZN": shares = int(AMZN)
+                elif stock == "NVA": shares = int(NVA)
+            else:
+                embed = discord.Embed(title="Invalid number of shares.", color=discord.Color.red())
+                await ctx.send(embed=embed)
+                return
+                    
         
         if stock == "AAPL":
             if int(AAPL) < shares:
