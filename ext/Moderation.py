@@ -1,22 +1,8 @@
-import datetime, discord, mysql.connector, json, lib.color as c
+import datetime, discord, lib.database as db
 from discord.ext import commands
 
-
-with open('./json/database-conf.json') as f:
-    config = json.load(f)
-
-with open('./json/database-conf4.json') as f:
-    config2 = json.load(f)
-
-try: #Everything
-    cum = mysql.connector.connect(**config)
-    cursor = cum.cursor()
-except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
-
-try: #Everything
-    cbx = mysql.connector.connect(**config2)
-    csr = cbx.cursor()
-except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
+cum, cursor = db.db.connect("db1")
+cbx, csr = db.db.connect("db4")
 
 class Moderation(commands.Cog):
     def __init__(self, bot): self.bot = bot
@@ -284,4 +270,3 @@ class Moderation(commands.Cog):
             await ctx.reply(embed=embed)
         
 def setup(bot): bot.add_cog(Moderation(bot))
-print(c.color.GREEN + "Moderation cog loaded" + c.color.END)

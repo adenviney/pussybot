@@ -1,33 +1,10 @@
-import datetime, discord, requests, re, random,  mysql.connector, json, os, lib.color as c, lib.AI as AI
+import datetime, discord, requests, re, random, os, lib.AI as AI, lib.database as db
 from discord.ext import commands, tasks
 from pussybot import bot, VERSION
 
-
-#Database checks whether the user code is their code.
-with open('./json/database-conf3.json') as f:
-    config = json.load(f)
-
-try: #Everything
-    xd = mysql.connector.connect(**config)
-    roux = xd.cursor()
-except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
-
-with open('./json/database-conf4.json') as f:
-    config2 = json.load(f)
-    
-try: #Everything
-    cbx = mysql.connector.connect(**config2)
-    csr = cbx.cursor()
-except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
-
-with open('./json/database-conf5.json') as f: 
-    config3 = json.load(f)
-
-try: #Everything
-    connect = mysql.connector.connect(**config3)
-    cursor = connect.cursor(buffered=True)
-except mysql.connector.Error as err: 
-    print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
+xd, roux = db.db.connect("db3")
+cbx, csr = db.db.connect("db4")
+connect, cursor = db.db.connect("db5")
 
 class Events(commands.Cog):
     def __init__(self, bot): 
@@ -256,8 +233,12 @@ class Events(commands.Cog):
             spike = random.choice([200, 300, 1000, 20, 70, 2000])
             #Stop stocks from going below 0
             if i[0] <= 200: minus_or_plus = "+"
+            
+            if minus_or_plus == "-": change_rate = f"▼ {str((i[0] - spike) / i[0])[:4]}"
+            elif minus_or_plus == "+": change_rate = f"▲ {str((i[0] + spike) / i[0])[:4]}"
                 
             cursor.execute(f"UPDATE stocks SET price = price {minus_or_plus} {random.randint(1, spike)} WHERE name = '{i[1]}'")
+            cursor.execute(f"UPDATE stocks SET change_rate = '{change_rate}' WHERE name = '{i[1]}'")
             connect.commit()
                 
             
@@ -293,4 +274,3 @@ class Events(commands.Cog):
         await ctx.send(embed=em, delete_after=5.0)
 
 def setup(bot): bot.add_cog(Events(bot))
-print(c.color.GREEN + "Events cog loaded" + c.color.END)

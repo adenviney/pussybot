@@ -1,9 +1,7 @@
-import datetime, discord, os, lib.color as c
-from pussybot import bot
+import datetime, discord, os
 from discord.ext import commands
 
 class Administration(commands.Cog):
-
     def __init__(self, bot): self.bot = bot
     
     @commands.command(name="emergency", brief="Developer command. Restricts bot to only basic commands")
@@ -65,4 +63,3 @@ class Administration(commands.Cog):
         await ctx.reply(embed=embed)
 
 def setup(bot): bot.add_cog(Administration(bot))
-print(c.color.GREEN + "Administration cog loaded" + c.color.END)

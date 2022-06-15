@@ -1,15 +1,7 @@
-import re
-import discord, lib.color as c, mysql.connector, random, json
+import discord, random, lib.database as db
 from discord.ext import commands
 
-with open('./json/database-conf5.json') as f: 
-    config = json.load(f)
-
-try: #Everything
-    connect = mysql.connector.connect(**config)
-    cursor = connect.cursor(buffered=True)
-except mysql.connector.Error as err: 
-    print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
+connect, cursor = db.db.connect("db5")
 
 def addcomma(amount): 
     return ("{:,}".format(amount))
@@ -437,7 +429,7 @@ class Economy(commands.Cog):
         stocks = cursor.fetchall()
         embed = discord.Embed(title="Stock market", color=discord.Color.green())
         for i in range(len(stocks)):
-            embed.add_field(name=f"{i + 1}. {stocks[i][1]}", value=f"Price: `${addcomma(stocks[i][0])}`", inline=False)
+            embed.add_field(name=f"{i + 1}. {stocks[i][1]}", value=f"Price: `${addcomma(stocks[i][0])}` `{stocks[i][2]}`", inline=False)
             
         await ctx.send(embed=embed)
         connect.commit()
@@ -570,9 +562,54 @@ class Economy(commands.Cog):
         elif stock == "AMZN": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'AMZN'")
         elif stock == "NVA": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'NVA'")
         
+        if stock == "AAPL":
+            shares1[0] = int(int(AAPL) - shares)
+            cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
+        elif stock == "GOOGL":
+            shares1[1] = int(int(GOOGL) - shares)
+            cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
+        elif stock == "AMZN":
+            shares1[2] = int(int(AMZN) - shares)
+            cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
+        elif stock == "NVA":
+            shares1[3] = int(int(NVA) - shares)
+            cursor.execute(f"UPDATE users SET shares = '{shares1[0]}|{shares1[1]}|{shares1[2]}|{shares1[3]}' WHERE id = {str(ctx.author.id)}")
+        
         embed = discord.Embed(title=f"You sold `${addcomma(price * shares)}` in {stock}", color=discord.Color.green())
         await ctx.send(embed=embed)
         connect.commit()
+        return
+    
+    @commands.command(name="shares", brief="See how many shares you have")
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def shares(self, ctx):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        if cursor.fetchone() is None:
+            embed = discord.Embed(title="You have no shares", color=discord.Color.red())
+            await ctx.send(embed=embed)
+            return
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        shares1 = cursor.fetchone()[3]
+        shares1 = shares1.split("|")
+        
+        AAPL = shares1[0]
+        GOOGL = shares1[1]
+        AMZN = shares1[2]
+        NVA = shares1[3]
+        
+        embed = discord.Embed(title="Your shares")
+        embed.add_field(name="Apple", value=f"`{str(AAPL)}`", inline=False)
+        embed.add_field(name="Google", value=f"`{str(GOOGL)}`", inline=False)
+        embed.add_field(name="Amazon", value=f"`{str(AMZN)}`", inline=False)
+        embed.add_field(name="Nvidia", value=f"`{str(NVA)}`", inline=False)
+        embed.set_footer(text=f"{ctx.author.name}'s shares", icon_url=ctx.author.avatar)
+        await ctx.send(embed=embed)
+        connect.commit()
+        return
+    
     
 def setup(bot): bot.add_cog(Economy(bot))
-print(c.color.GREEN + "Economy cog loaded" + c.color.END)

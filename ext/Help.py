@@ -3,7 +3,6 @@ from discord import Embed
 from discord.utils import get
 from discord.ext.menus import MenuPages, ListPageSource
 from discord.ext.commands import Cog, command
-import lib.color as c
 
 
 def syntax(command):
@@ -77,6 +76,4 @@ class Help(Cog):
 			else:
 				await ctx.send("That command does not exist.")
 
-def setup(bot):
-	bot.add_cog(Help(bot))
-print(c.color.GREEN + "Help cog loaded" + c.color.END)
+def setup(bot): bot.add_cog(Help(bot))

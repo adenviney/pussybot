@@ -1,4 +1,4 @@
-import discord, lib.color as c
+import discord
 from discord.ext import commands
 
 class Server(commands.Cog):
@@ -164,4 +164,3 @@ class Server(commands.Cog):
 
 
 def setup(bot): bot.add_cog(Server(bot))
-print(c.color.GREEN + "Server cog loaded" + c.color.END)

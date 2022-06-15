@@ -1,4 +1,4 @@
-import discord, lib.color as c
+import discord
 from discord.ext import commands
 from pussybot import bot, PATCHNOTES
 
@@ -14,4 +14,3 @@ class General(commands.Cog):
         await ctx.send(embed=embed)
     
 def setup(bot): bot.add_cog(General(bot))
-print(c.color.GREEN + "General cog loaded" + c.color.END)

@@ -1,13 +1,7 @@
-import asyncio,discord,random, mysql.connector, json, lib.color as c
+import asyncio,discord,random, lib.database as db
 from discord.ext import commands
 
-with open('./json/database-conf2.json') as f:
-    config = json.load(f)
-
-try: #Everything
-    cnxm = mysql.connector.connect(**config)
-    cursor = cnxm.cursor()
-except mysql.connector.Error as err: print(c.color.FAIL + "[ERROR] " + c.color.END + str(err))
+cnxm, cursor = db.db.connect("db2")
 
 class Leveling(commands.Cog):
     def __init__(self, bot):
@@ -141,4 +135,3 @@ class Leveling(commands.Cog):
                 await message.channel.send(embed=embed)
 
 def setup(bot): bot.add_cog(Leveling(bot))
-print(c.color.GREEN + "Leveling cog loaded" + c.color.END)

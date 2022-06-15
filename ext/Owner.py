@@ -1,4 +1,4 @@
-import contextlib, datetime, io, textwrap, discord, lib.color as c
+import contextlib, datetime, io, textwrap, discord
 from traceback import format_exception
 from pussybot import bot
 from discord.ext import commands
@@ -104,4 +104,3 @@ class Owner(commands.Cog):
         await ctx.reply(embed=discord.Embed(title=f"All users in {ctx.guild.name} now have the verified role", timestamp=datetime.datetime.utcnow(), color=discord.Color.green()))
 
 def setup(bot): bot.add_cog(Owner(bot))
-print(c.color.GREEN + "Owner cog loaded" + c.color.END)
