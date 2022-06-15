@@ -9,7 +9,7 @@ openai.api_key = openaikey
 
 def ask(question):
     response = openai.Completion.create(
-        model="text-ada-001",
+        model="text-davinci-002",
         prompt=question,
         temperature=0.30,
         max_tokens=60,
