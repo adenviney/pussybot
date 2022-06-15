@@ -248,16 +248,16 @@ class Events(commands.Cog):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
         
-        print("Stock loop started")
         #Randomly change stock prices up or down to simulate market movement
         cursor.execute("SELECT * FROM stocks")
         result = cursor.fetchall()
         for i in result:
             minus_or_plus = random.choice(["-", "+"])
+            spike = random.choice([200, 300, 1000, 20, 70, 2000])
             #Stop stocks from going below 0
             if i[0] <= 200: minus_or_plus = "+"
                 
-            cursor.execute(f"UPDATE stocks SET price = price {minus_or_plus} {random.randint(1, 200)} WHERE name = '{i[1]}'")
+            cursor.execute(f"UPDATE stocks SET price = price {minus_or_plus} {random.randint(1, spike)} WHERE name = '{i[1]}'")
             connect.commit()
                 
             
@@ -282,7 +282,7 @@ class Events(commands.Cog):
             elif weeks > 0: time = f"{weeks} weeks"
             elif days > 0: time = f"{days} days"
             elif hours > 0: time = f"{hours} hours"
-            elif minutes > 0: time = f"{minutes} minutes"
+            elif minutes > 0: time = f"{minutes} minute(s)"
             elif seconds > 0: time = f"{seconds} seconds"
             await ctx.send(embed=discord.Embed(title="Cooldown", description=f"{ctx.author.name}, you are on cooldown for {str(time)}."))
             return

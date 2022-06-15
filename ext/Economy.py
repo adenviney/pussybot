@@ -445,54 +445,134 @@ class Economy(commands.Cog):
         
     @commands.command(name="invest", brief="Invest in the stock market")
     @commands.cooldown(1, 300, commands.BucketType.user)
-    async def invest(self, ctx, amount: int, stock: str):
+    async def invest(self, ctx, shares: int, stock: str):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
-        
-        
+                
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         if cursor.fetchone() is None:
             embed = discord.Embed(title="You can't invest if you don't have a bank.", color=discord.Color.red())
             await ctx.send(embed=embed)
             return
-
         
         cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
         if cursor.fetchone() is None:
             embed = discord.Embed(title="That stock doesn't exist.", color=discord.Color.red())
             await ctx.send(embed=embed)
             return
-
+        
+        cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
+        stock_price = cursor.fetchone()[0]
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         bank = cursor.fetchone()[2]
-        if bank < amount:
-            embed = discord.Embed(title="You can't invest that much.", color=discord.Color.red())
+        
+        how_much_to_pay = (shares * stock_price)
+        if bank < how_much_to_pay:
+            embed = discord.Embed(title=f"You don't have enough money to invest `{str(shares)}` shares in this stock.", color=discord.Color.red())
             await ctx.send(embed=embed)
             return
-
+        
+        cursor.execute(f"UPDATE users SET bank = bank - {str(how_much_to_pay)} WHERE id = {str(ctx.author.id)}")
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
-        bank = cursor.fetchone()[2]
-
-        if bank > 0:
-            cursor.execute(f"UPDATE users SET bank = bank - {str(amount)} WHERE id = {str(ctx.author.id)}")
+        shares_owned = cursor.fetchone()[3]
         
-            
-        new_amt = amount / 10
+        shares_owned = shares_owned.split("|")
+        
+        AAPL = shares_owned[0]
+        GOOGL = shares_owned[1]
+        AMZN = shares_owned[2]
+        NVA = shares_owned[3]
+        
+        if stock == "AAPL":
+            shares_owned[0] = int(int(AAPL) + shares)
+            cursor.execute(f"UPDATE users SET shares = '{shares_owned[0]}|{shares_owned[1]}|{shares_owned[2]}|{shares_owned[3]}' WHERE id = {str(ctx.author.id)}")
+        elif stock == "GOOGL":
+            shares_owned[1] = int(int(GOOGL) + shares)
+            cursor.execute(f"UPDATE users SET shares = '{shares_owned[0]}|{shares_owned[1]}|{shares_owned[2]}|{shares_owned[3]}' WHERE id = {str(ctx.author.id)}")
+        elif stock == "AMZN":
+            shares_owned[2] = int(int(AMZN) + shares)
+            cursor.execute(f"UPDATE users SET shares = '{shares_owned[0]}|{shares_owned[1]}|{shares_owned[2]}|{shares_owned[3]}' WHERE id = {str(ctx.author.id)}")
+        elif stock == "NVA":
+            shares_owned[3] = int(int(NVA) + shares)
+            cursor.execute(f"UPDATE users SET shares = '{shares_owned[0]}|{shares_owned[1]}|{shares_owned[2]}|{shares_owned[3]}' WHERE id = {str(ctx.author.id)}")
+        
+        a = int(stock_price) / 1024
+        b = random.randint(1, int(a))
+        cursor.execute(f"UPDATE stocks SET price = price + {str(b)} WHERE name = '{stock}'")
+                    
+        connect.commit()
+        embed = discord.Embed(title=f"You have invested `{str(shares)}` shares in `{stock}`. Total: `${addcomma(how_much_to_pay)}`", color=discord.Color.green())
+        await ctx.send(embed=embed)
+        return
+    
+    @commands.command(name="sell", brief="Sell a stock")
+    @commands.cooldown(1, 300, commands.BucketType.user)
+    async def sell(self, ctx, stock: str, shares: int = 1):
+        if connect.is_connected(): pass
+        else: connect.reconnect(attempts=3)
+        
+        stock = stock.upper()
+        
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        if cursor.fetchone() is None:
+            embed = discord.Embed(title="You can't sell if you don't have a bank.", color=discord.Color.red())
+            await ctx.send(embed=embed)
+            return
+        
         cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
-        cursor.execute(f"UPDATE stocks SET price = price + {str(new_amt)} WHERE name = '{stock}'")
+        if cursor.fetchone() is None:
+            embed = discord.Embed(title="That stock doesn't exist.", color=discord.Color.red())
+            await ctx.send(embed=embed)
+            return
         
-        embed = discord.Embed(title=f"You invested `${addcomma(amount)}` in {stock}", color=discord.Color.green())
+        cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
+        shares1 = cursor.fetchone()[3]    
+        shares1 = shares1.split("|")
+        
+        AAPL = shares1[0]
+        GOOGL = shares1[1]
+        AMZN = shares1[2]
+        NVA = shares1[3]
+        
+        if stock == "AAPL":
+            if int(AAPL) < shares:
+                embed = discord.Embed(title="You don't have that many shares.", color=discord.Color.red())
+                await ctx.send(embed=embed)
+                return
+            
+        elif stock == "GOOGL":
+            if int(GOOGL) < shares:
+                embed = discord.Embed(title="You don't have that many shares.", color=discord.Color.red())
+                await ctx.send(embed=embed)
+                return
+            
+        elif stock == "AMZN":
+            if int(AMZN) < shares:
+                embed = discord.Embed(title="You don't have that many shares.", color=discord.Color.red())
+                await ctx.send(embed=embed)
+                return
+        
+        elif stock == "NVA":
+            if int(NVA) < shares:
+                embed = discord.Embed(title="You don't have that many shares.", color=discord.Color.red())
+                await ctx.send(embed=embed)
+                return
+        
+        cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
+        price = cursor.fetchone()[0]
+        
+        cursor.execute(f"UPDATE users SET bank = bank + {str(price * shares)} WHERE id = {str(ctx.author.id)}") 
+
+        if stock == "AAPL": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'AAPL'")
+        elif stock == "GOOGL": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'GOOGL'")
+        elif stock == "AMZN": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'AMZN'")
+        elif stock == "NVA": cursor.execute(f"UPDATE stocks SET price = price - {str(shares)} WHERE name = 'NVA'")
+        
+        embed = discord.Embed(title=f"You sold `${addcomma(price * shares)}` in {stock}", color=discord.Color.green())
         await ctx.send(embed=embed)
         connect.commit()
-        return
-        
-
-    
-        
-            
-    
     
 def setup(bot): bot.add_cog(Economy(bot))
 print(c.color.GREEN + "Economy cog loaded" + c.color.END)
