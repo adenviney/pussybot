@@ -9,10 +9,6 @@ def addcomma(amount):
 cards = const.load.cards
 
 class viewstuff(discord.ui.View): 
-    
-    # def __init__(self, ctx, player_cards, dealer_cards):
-    #     self.ctx = ctx
-    
     def __init__(self, ctx, player_cards, dealer_cards, bet, wallet):
         super().__init__(timeout=20)
         self.ctx = ctx
@@ -62,35 +58,35 @@ class viewstuff(discord.ui.View):
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total > 21:
                 embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total > dealer_total:
                 embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if dealer_total > 21:
                 embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total < dealer_total:
                 embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total == dealer_total:
                 embed = discord.Embed(title="Blackjack", description="Tie!\nYou didn't loose any money", color=discord.Color.gold())
@@ -140,35 +136,35 @@ class viewstuff(discord.ui.View):
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total > 21: 
                 embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total > dealer_total:
                 embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if dealer_total > 21:
                 embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total < dealer_total:
                 embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total == dealer_total:
                 embed = discord.Embed(title="Blackjack", description="Tie!\nYou didn't loose any money", color=discord.Color.gold())
@@ -243,6 +239,7 @@ class Economy(commands.Cog):
                 return
             
         except:
+            
             if str(amount) == "all":
                 cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
                 if cursor.fetchone() is None:
@@ -252,6 +249,7 @@ class Economy(commands.Cog):
                 cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
                 coins = cursor.fetchone()[0]
                 amount = coins
+            elif str(amount).endswith("k"): amount = int(float(amount[:-1]) * 1000)
                 
         amount = int(amount)
         
@@ -278,6 +276,8 @@ class Economy(commands.Cog):
     async def withdraw(self, ctx, amount: str = 0):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
+        
+        
         try:
             if int(amount) == 0:
                 await ctx.send(embed=discord.Embed(title="Please specify an amount of coins to withdraw.", color=discord.Color.red()))
@@ -293,6 +293,7 @@ class Economy(commands.Cog):
                 cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
                 coins = cursor.fetchone()[2]
                 amount = coins
+            elif str(amount).endswith("k"): amount = int(float(amount[:-1]) * 1000)
                 
         amount = int(amount)
         
@@ -623,7 +624,7 @@ class Economy(commands.Cog):
         
     @commands.command(name="invest", brief="Invest in the stock market", aliases=["buy"])
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def invest(self, ctx, stock: str, shares: int):
+    async def invest(self, ctx, stock: str, shares: str):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
         
@@ -640,6 +641,9 @@ class Economy(commands.Cog):
             embed = discord.Embed(title="That stock doesn't exist.", color=discord.Color.red())
             await ctx.send(embed=embed)
             return
+        
+        if str(shares).endswith("k"): shares = int(float(shares[:-1]) * 1000)
+        shares = int(shares)
         
         cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
         stock_price = cursor.fetchone()[0]
@@ -714,6 +718,8 @@ class Economy(commands.Cog):
             embed = discord.Embed(title="That stock doesn't exist.", color=discord.Color.red())
             await ctx.send(embed=embed)
             return
+        
+        if str(shares).endswith("k"): shares = int(float(shares[:-1]) * 1000)
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         shares1 = cursor.fetchone()[3]    
@@ -831,6 +837,8 @@ class Economy(commands.Cog):
             embed = discord.Embed(title="You have to have a wallet to bet", color=discord.Color.red())
             await ctx.send(embed=embed)
             return
+        
+        if str(bet).endswith("k"): bet = int(float(bet[:-1]) * 1000)
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         wallet = cursor.fetchone()[0]
