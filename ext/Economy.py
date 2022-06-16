@@ -58,39 +58,39 @@ class viewstuff(discord.ui.View):
                     
             #Check if the player has blackjack
             if player_total == 21:
-                embed = discord.Embed(title="Blackjack", description=f"You won `${self.bet}`!", color=discord.Color.green())
+                embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total > 21:
-                embed = discord.Embed(title="Blackjack", description=f"You lost! {self.bet}", color=discord.Color.red())
+                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total > dealer_total:
-                embed = discord.Embed(title="Blackjack", description=f"You won `${self.bet}`!", color=discord.Color.green())
+                embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if dealer_total > 21:
-                embed = discord.Embed(title="Blackjack", description=f"You won `${self.bet}`!", color=discord.Color.green())
+                embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total < dealer_total:
-                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${self.bet}`", color=discord.Color.red())
+                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total == dealer_total:
                 embed = discord.Embed(title="Blackjack", description="Tie!\nYou didn't loose any money", color=discord.Color.gold())
@@ -136,39 +136,39 @@ class viewstuff(discord.ui.View):
                     
             #Check if the dealer has blackjack
             if dealer_total == 21:
-                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${self.bet}`", color=discord.Color.red())
+                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total > 21: 
-                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${self.bet}`", color=discord.Color.red())
+                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}` `{self.player_cards[2]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total > dealer_total:
-                embed = discord.Embed(title="Blackjack", description=f"You won `${self.bet}`!", color=discord.Color.green())
+                embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if dealer_total > 21:
-                embed = discord.Embed(title="Blackjack", description=f"You won `${self.bet}`!", color=discord.Color.green())
+                embed = discord.Embed(title="Blackjack", description=f"You won `${addcomma(self.bet)}`!", color=discord.Color.green())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins + {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins + {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total < dealer_total:
-                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${self.bet}`", color=discord.Color.red())
+                embed = discord.Embed(title="Blackjack", description=f"You lost :(\nYou lost `${addcomma(self.bet)}`", color=discord.Color.red())
                 embed.add_field(name="You", value=f"`{self.player_cards[0]}` `{self.player_cards[1]}`\nTotal: {player_total}", inline=True)
                 embed.add_field(name="Dealer", value=f"`{self.dealer_cards[0]}` `{self.dealer_cards[1]}` `{self.dealer_cards[2]}`\nTotal: {dealer_total}", inline=True)
                 await interaction.response.edit_message(embed=embed, view=self)
-                cursor.execute(f"UPDATE users SET coins = coins - {self.bet} WHERE id = {str(self.ctx.author.id)};")
+                cursor.execute(f"UPDATE users SET coins = coins - {addcomma(self.bet)} WHERE id = {str(self.ctx.author.id)};")
                 return
             if player_total == dealer_total:
                 embed = discord.Embed(title="Blackjack", description="Tie!\nYou didn't loose any money", color=discord.Color.gold())
