@@ -10,8 +10,6 @@ class Events(commands.Cog):
     def __init__(self, bot): 
         self.bot = bot
         self.version = VERSION
-        self.max_window = 5
-        self.window_time_ms = 5000
         self.stockloop.start()
     
     @commands.Cog.listener()

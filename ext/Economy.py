@@ -1,4 +1,4 @@
-import discord, random, lib.database as db, discord.ui
+import discord, random, lib.database as db, discord.ui, lib.constants as const
 from discord.ext import commands
 
 connect, cursor = db.db.connect("db5")
@@ -6,10 +6,7 @@ connect, cursor = db.db.connect("db5")
 def addcomma(amount): 
     return ("{:,}".format(amount))
 
-#cards = {"A" : 1, "2" : 2, "3" : 3, "4" : 4, "5" : 5, "6" : 6, "7" : 7, "8" : 8, "9" : 9, "10" : 10, "J" : 10, "Q" : 10, "K" : 10}
-cards = ("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K")
-sessions = {}
-deck = []
+cards = const.load.cards
 
 class viewstuff(discord.ui.View): 
     
@@ -196,11 +193,11 @@ class viewstuff(discord.ui.View):
 class Economy(commands.Cog):    
     def __init__(self, bot): 
         self.bot = bot
-        self.daily_pay = 25000
-        self.weekly_pay = 50000
-        self.monthly_pay = 100000
+        self.daily_pay = const.load.daily_pay
+        self.weekly_pay = const.load.weekly_pay
+        self.monthly_pay = const.load.monthly_pay
         
-    #Commands: $invest, $buy, $sell, $shop, $inventory, $use, $stats
+    #Commands to add: $shop, $inventory, $use, $stats
         
     @commands.command(name="beg", brief="Beg for coins")
     @commands.cooldown(1, 30, commands.BucketType.user)
