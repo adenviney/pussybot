@@ -112,6 +112,7 @@ class Events(commands.Cog):
                     #Send a message to the new users channel that the user has been verified
                     embed = discord.Embed(title=f"✅ {message.author.name} has been verified", description=f"{message.author.mention} ({message.author.id})", timestamp=datetime.datetime.utcnow(), color=discord.Color.green())
                     await bot.get_channel(983392113746141204).send(embed=embed)
+                    await bot.get_channel(938913968796336168).send(embed=discord.Embed(title=f"{message.author.name} has joined the server, say hi!", color=discord.Color.blue()))
                     
         if message.channel.id == 985325859235835915:
             embed = discord.Embed(title=f"Anonymous confession", description=f"{message.content}", timestamp=datetime.datetime.utcnow(), color=discord.Color.default())
@@ -220,7 +221,7 @@ class Events(commands.Cog):
     # @commands.Cog.listener()
     # async def on_reaction_added(self, reaction, user):
         
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=30) #Please, for the love of god, do not change this. Your Internet will be royally fucked.
     async def stockloop(self):
         if connect.is_connected(): pass
         else: connect.reconnect(attempts=3)
