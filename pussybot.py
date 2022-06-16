@@ -5,8 +5,7 @@ VERSION = "0.8.7"
 PATCHNOTES = f"""Pussybot v{VERSION} patchnotes
 [!] Open source code is available on GitHub: https://github.com/adenviney/pussybot
 
-[*] Fixed countless bugs, including infinite cash glitch, added more features and made bot faster (slightly)
-[+] Improvements to codebase, lib.database is now used to connect to databases.
+[*] Fixed more bugs, blackjack update! $blackajck, bj <bet>
 """
 
 intents = discord.Intents.all()
