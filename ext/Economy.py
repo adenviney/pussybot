@@ -239,7 +239,6 @@ class Economy(commands.Cog):
                 return
             
         except:
-            
             if str(amount) == "all":
                 cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
                 if cursor.fetchone() is None:
@@ -250,7 +249,7 @@ class Economy(commands.Cog):
                 coins = cursor.fetchone()[0]
                 amount = coins
             elif str(amount).endswith("k"): amount = int(float(amount[:-1]) * 1000)
-            elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
+            elif str(amount).endswith("m"): amount = int(float(amount[:-1]) * 1000000)
                 
         amount = int(amount)
         
@@ -268,6 +267,7 @@ class Economy(commands.Cog):
             await ctx.send(embed=discord.Embed(title="You don't have enough coins to deposit.", color=discord.Color.red()))
             return
         
+        print(str(amount))
         cursor.execute(f"UPDATE users SET coins = coins - {str(amount)} WHERE id = {str(ctx.author.id)}")
         cursor.execute(f"UPDATE users SET bank = bank + {str(amount)} WHERE id = {str(ctx.author.id)}")
         connect.commit()
@@ -295,7 +295,7 @@ class Economy(commands.Cog):
                 coins = cursor.fetchone()[2]
                 amount = coins
             elif str(amount).endswith("k"): amount = int(float(amount[:-1]) * 1000)
-            elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
+            elif str(amount).endswith("m"): amount = int(float(amount[:-1]) * 1000000)
                 
         amount = int(amount)
         
@@ -645,7 +645,7 @@ class Economy(commands.Cog):
             return
         
         if str(shares).endswith("k"): shares = int(float(shares[:-1]) * 1000)
-        elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
+        elif str(shares).endswith("m"): shares = int(float(shares[:-1]) * 1000000)
         
         shares = int(shares)
         
@@ -724,7 +724,7 @@ class Economy(commands.Cog):
             return
         
         if str(shares).endswith("k"): shares = int(float(shares[:-1]) * 1000)
-        elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
+        elif str(shares).endswith("m"): shares = int(float(shares[:-1]) * 1000000)
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         shares1 = cursor.fetchone()[3]    
