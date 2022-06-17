@@ -4,7 +4,7 @@ from discord.ext import commands
 connect, cursor = db.db.connect("db5")
 
 def addcomma(amount): 
-    return ("{:,}".format(amount))
+    return ("{:,}".format(int(amount)))
 
 cards = const.load.cards
 
@@ -250,6 +250,7 @@ class Economy(commands.Cog):
                 coins = cursor.fetchone()[0]
                 amount = coins
             elif str(amount).endswith("k"): amount = int(float(amount[:-1]) * 1000)
+            elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
                 
         amount = int(amount)
         
@@ -294,6 +295,7 @@ class Economy(commands.Cog):
                 coins = cursor.fetchone()[2]
                 amount = coins
             elif str(amount).endswith("k"): amount = int(float(amount[:-1]) * 1000)
+            elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
                 
         amount = int(amount)
         
@@ -643,6 +645,8 @@ class Economy(commands.Cog):
             return
         
         if str(shares).endswith("k"): shares = int(float(shares[:-1]) * 1000)
+        elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
+        
         shares = int(shares)
         
         cursor.execute(f"SELECT * FROM stocks WHERE name = '{stock}'")
@@ -720,6 +724,7 @@ class Economy(commands.Cog):
             return
         
         if str(shares).endswith("k"): shares = int(float(shares[:-1]) * 1000)
+        elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         shares1 = cursor.fetchone()[3]    
@@ -839,6 +844,7 @@ class Economy(commands.Cog):
             return
         
         if str(bet).endswith("k"): bet = int(float(bet[:-1]) * 1000)
+        elif str(bet).endswith("m"): bet = int(float(bet[:-1]) * 1000000)
         
         cursor.execute(f"SELECT * FROM users WHERE id = {str(ctx.author.id)};")
         wallet = cursor.fetchone()[0]
