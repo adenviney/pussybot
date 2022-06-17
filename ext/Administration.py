@@ -11,7 +11,7 @@ class Administration(commands.Cog):
         os.system("python ./lib/emergency.py")
     
     @commands.command(name="lockdown", brief="Lockdown the server")
-    #@commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_guild=True)
     async def lockdown(self, ctx, *, reason="No reason provided"):
         if ctx.message.author.guild_permissions.manage_guild == False:
             embed = discord.Embed(title=f"❌ Could not lockdown server", description=f"Failed to execute", timestamp=datetime.datetime.utcnow(), color=discord.Color.red())
