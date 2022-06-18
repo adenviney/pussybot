@@ -1,8 +1,8 @@
 mysql-connector
 discord.py
-py-cord
 buttons
 requests
 openai
 discord-ext-menus
 discord-ui
+-U py-cord --pre
