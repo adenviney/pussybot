@@ -1,4 +1,4 @@
-# Pussybot
+# Pussybot (now closed-source)
 Pussybot, a Discord bot developed by `gravy#0001` for [LDF](https://discord.gg/rwqTbbxzAN). Based on Previous code also written by `gravy#0001`.
 Some of the libraries Pussybot uses are:<br><br>
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
